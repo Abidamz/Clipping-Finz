@@ -7,6 +7,7 @@ Companion to the sellable workbook. Internal use.
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _pdfkit import *   # noqa
+from cover import FullCover
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
 
@@ -21,21 +22,24 @@ def hr(s):
     story.append(SetSection(doc, s))
 
 # ---------------------------------------------------------------- cover
-story.append(NextPageTemplate("body"))
-story.append(Spacer(1, 14 * mm))
-story.append(P("OPERATING PACK", S("k", fontName="DJB", fontSize=9, leading=12, textColor=ACCENT)))
-story.append(Spacer(1, 5 * mm))
-story.append(P("Selling Clipping From Zero", S("t1", fontName="DJB", fontSize=27, leading=34, textColor=INK)))
-story.append(P("Kenya first, Nigeria second", S("t2", fontName="DJB", fontSize=27, leading=34, textColor=INK)))
-story.append(Spacer(1, 6 * mm))
-story.append(Rule(thickness=2, color=ACCENT, space=12))
+story.append(FullCover("plan"))
+story.append(PageBreak())
+story.append(Spacer(1, 4 * mm))
+story.append(P("OPERATING PACK", S("k", fontName="DJB", fontSize=9, leading=12,
+                                   textColor=ACCENT, spaceAfter=4)))
+story.append(Spacer(1, 2 * mm))
+story.append(P("Selling Clipping From Zero", S("pt", fontName="DJB", fontSize=20,
+                                              leading=25, textColor=INK)))
+story.append(P("Kenya first, Nigeria second", S("pt2", fontName="DJB", fontSize=20,
+                                               leading=25, textColor=INK)))
+story.append(Spacer(1, 3 * mm))
 story.append(P("A 30-day launch plan with a real advertising budget, the exact ad scripts, "
                "the checkout setup, and the numbers behind every claim.",
-               S("s", fontSize=11.5, leading=17)))
-story.append(Spacer(1, 8 * mm))
+               S("ps", fontSize=11, leading=16)))
+story.append(Spacer(1, 6 * mm))
 story.append(data_table([
     ["Budget assumed", "\u20a640,000 advertising (about $30)"],
-    ["Primary market", "Kenya \u2014 because M-Pesa checkout works and the audience is buying digital courses"],
+    ["Primary market", "Kenya \u2014 M-Pesa checkout works and the audience buys digital courses"],
     ["Secondary market", "Nigeria \u2014 free traffic and warm network, not paid initially"],
     ["Stack", "Systeme.io (free) for pages, email and course area; Selar for KES checkout"],
     ["Main offer", "KSh 1,499 \u2248 \u20a615,500"],
@@ -46,7 +50,7 @@ story.append(caution("The one thing to read before page 2", [
     P("TikTok Ads has a hard minimum of <b>$50 per day at campaign level and $20 per ad group</b>. "
       "\u20a640,000 is roughly $30. That is <b>less than one day</b> of TikTok advertising at the "
       "platform minimum \u2014 not four weeks. Any plan built on running TikTok ads for a month on "
-      "\u20a640,000 is arithmetic that cannot happen. Page 4 shows what the same money buys "
+      "\u20a640,000 is arithmetic that cannot happen. Section 1 shows what the same money buys "
       "elsewhere, and what to do about it.", st_small)
 ]))
 story.append(PageBreak())

@@ -4,8 +4,10 @@ Two PDFs, built from source so they can be regenerated after any edit.
 
 | File | What it is | Sell it? |
 | --- | --- | --- |
-| `Clipping-From-Zero-Workbook.pdf` | 32 pages. Six parts, 24 chapters, 30-day log. | **Yes** — this is the product |
-| `Launch-Plan-Kenya-Nigeria-30-Days.pdf` | 10 pages. Budget reality, funnel, ad scripts, calendar, stop rules. | No — internal |
+| `Clipping-From-Zero-Workbook.pdf` | 33 pages. Six parts, 24 chapters, 30-day log, designed cover. | **Yes** — this is the product |
+| `Launch-Plan-Kenya-Nigeria-30-Days.pdf` | 11 pages. Budget reality, funnel, ad scripts, calendar, stop rules. | No — internal |
+| `cover-square-1080.png` | Product image for the Selar listing and social posts. | Use as artwork |
+| `cover-story-1080x1920.png` | Vertical promo image (story / Reel cover / status). | Use as artwork |
 
 ## The headline finding
 
@@ -43,6 +45,8 @@ Ten sales in 30 days is a **successful first launch** and worth roughly ₦155,0
 ```
 launch-kit/
   _pdfkit.py                     shared PDF engine (reportlab, DejaVu fonts)
+  cover.py                       full-bleed vector cover pages, both PDFs
+  make_images.py                 generates the two promo images from PDFs
   build_product.py               builds the workbook (two-pass, for TOC page numbers)
   build_plan.py                  builds the operating pack
   sec1.py ... sec6.py            workbook content, one module per part
@@ -57,6 +61,7 @@ cd course/launch-kit
 pip install --break-system-packages reportlab fonttools
 python3 build_product.py && python3 build_product.py   # twice: TOC page numbers
 python3 build_plan.py
+python3 make_images.py
 ```
 
 `build_product.py` must run twice on a clean checkout — the first pass records the page

@@ -183,7 +183,8 @@ class Doc(BaseDocTemplate):
                                  **kw)
         self.doc_title = title
         fw = self.width
-        cover = Frame(self.leftMargin, self.bottomMargin, fw, self.height, id="cover",
+        # full-bleed frame for the cover artwork
+        cover = Frame(0, 0, A4[0], A4[1], id="cover",
                       leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
         body = Frame(self.leftMargin, self.bottomMargin, fw, self.height - 6 * mm, id="body",
                      leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)

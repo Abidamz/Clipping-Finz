@@ -9,6 +9,7 @@ from _pdfkit import *   # noqa
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
 import sec1, sec2, sec3, sec4, sec5, sec6
+from cover import FullCover
 
 OUT = os.path.join(HERE, "Clipping-From-Zero-Workbook.pdf")
 PW = A4[0] - 40 * mm
@@ -28,23 +29,15 @@ doc = Doc(OUT, "Clipping From Zero \u2014 The Beginner\u2019s Workbook",
 story = []
 
 # ------------------------------------------------------------------ cover
-story.append(Spacer(1, 12 * mm))
-story.append(P("CLIPPING FROM ZERO", S("k", fontName="DJB", fontSize=9.5, leading=12,
+story.append(FullCover("workbook"))
+story.append(PageBreak())
+story.append(Spacer(1, 4 * mm))
+story.append(P("CLIPPING FROM ZERO", S("k", fontName="DJB", fontSize=9, leading=12,
                                       textColor=ACCENT, spaceAfter=4)))
-story.append(Spacer(1, 4 * mm))
-story.append(P("The Beginner\u2019s", S("t1", fontName="DJB", fontSize=32, leading=38, textColor=INK)))
-story.append(P("Workbook", S("t2", fontName="DJB", fontSize=32, leading=38, textColor=INK)))
-story.append(Spacer(1, 4 * mm))
-story.append(P("Turning long videos into short-form work \u2014 and getting paid for it",
-               S("t3", fontSize=12.5, leading=17, textColor=MUTED)))
-story.append(Spacer(1, 7 * mm))
-story.append(Rule(thickness=2, color=ACCENT, space=12))
 story.append(Spacer(1, 2 * mm))
-story.append(P("A workbook you work through, not a video you watch once. Six parts, "
-               "twenty-four chapters, a 30-day log, and the honest numbers behind the "
-               "opportunity.", S("lead", fontSize=11.5, leading=17.5)))
-story.append(Spacer(1, 9 * mm))
-
+story.append(P("Read this page before you buy, or before you start",
+               S("ft", fontName="DJB", fontSize=15, leading=20, textColor=INK)))
+story.append(Spacer(1, 3 * mm))
 story.append(data_table([
     ["What this is", "A structured course in clipping: the business, the work, the money, the traps."],
     ["Who it is for", "Complete beginners in Nigeria and Kenya, 18+. Phone-only is fine."],
@@ -53,7 +46,7 @@ story.append(data_table([
     ["What it costs to start", "Nothing but data and time."],
     ["What it will not do", "Promise you an income. Nothing honestly can."],
 ], [PW * 0.28, PW * 0.72], header=False, zebra=False))
-story.append(Spacer(1, 8 * mm))
+story.append(Spacer(1, 7 * mm))
 story.append(warn("Read this before anything else", [
     P("Clipping pays per thousand views, and views are not guaranteed. Most people who start "
       "earn nothing in their first month. A meaningful number never get a single clip "
@@ -61,9 +54,14 @@ story.append(warn("Read this before anything else", [
       "detail \u2014 but it does not sell you an income, and you should be suspicious of "
       "anything that does.", st_small)
 ]))
-story.append(Spacer(1, 6 * mm))
-story.append(P("Edition 1.0  \u00b7  October 2026  \u00b7  Written for the Nigerian and Kenyan market",
-               S("ed", fontSize=8.2, leading=11, textColor=MUTED)))
+story.append(Spacer(1, 5 * mm))
+story.append(note("What you are paying for", [
+    P("The information in this market is mostly free and mostly unreliable: threads written "
+      "by people selling courses, earnings screenshots nobody can verify, and advice that "
+      "gets accounts banned. The fee here is not for secrets. It is for the order, the "
+      "arithmetic done properly, the traps named, and a 30-day structure to work through "
+      "\u2014 which is the part most people never build for themselves.", st_small)
+]))
 story.append(PageBreak())
 
 # ------------------------------------------------------------------ contents
