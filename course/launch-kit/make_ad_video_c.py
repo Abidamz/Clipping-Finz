@@ -1,13 +1,11 @@
 """
-Creative C: "the festival" - seasonal (December) angle, honest.
+Creative C: "the December angle" - urgency without an income promise.
 
-Targets the festive-season money hunt WITHOUT promising income. The angle is
-anti-hype: December floods the feed with "make money for the festival" claims,
-and this ad is the one telling the truth about payout thresholds and delays.
+Targets people who need money now (festival season). The ad states plainly that
+this will not produce December cash, then sells the thing it can honestly do:
+get them competent by January.
 
-This creative IS seasonal by design - it is meant to expire. Creative B stays
-evergreen; run this alongside it during December only.
-1080x1920, 30fps, 28s, silent (music added in TikTok).
+1080x1920, 30fps, 30 seconds, silent (music added in the TikTok editor).
 """
 import os
 from PIL import Image, ImageDraw, ImageFont
@@ -31,21 +29,20 @@ FR = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 def f(p, s):
     return ImageFont.truetype(p, s)
 
+# (start, end, kind, lines)   kind: hook | truth | needs | gap | turn | cta
 SCENES = [
-    (0.0,  4.5,  "hook",
-     ["Looking for money", "before the festival?"]),
-    (4.5,  9.0,  "big",
-     ["Then be careful", "what you buy this month."]),
-    (9.0,  15.5, "lines",
-     ["Nobody pays you for watching clips.",
-      "You are paid per 1,000 views -",
-      "once you clear the minimum."]),
-    (15.5, 21.0, "punch",
-     ["Most platforms also settle", "weeks after that."]),
-    (21.0, 25.0, "turn",
-     ["So this is not December money.",
-      "It is January money."]),
-    (25.0, 28.0, "cta",
+    (0.0,  5.0,  "hook",
+     ["Every December,", "everyone wants money."]),
+    (5.0,  11.0, "truth",
+     ["You cannot build", "a business in 7 days."]),
+    (11.0, 17.0, "gap",
+     ["So most people do", "the same three things.",
+      "Borrow. Hustle. Regret."]),
+    (17.0, 23.0, "turn",
+     ["But you can learn how", "clipping actually pays", "by January."]),
+    (23.0, 27.0, "needs",
+     ["No followers.", "No camera.", "No permission."]),
+    (27.0, 30.0, "cta",
      ["Clipping From Zero", "33-page workbook"]),
 ]
 
@@ -72,63 +69,67 @@ def render(t):
         ld = ImageDraw.Draw(layer)
 
         if kind == "hook":
-            y = 660
-            fo = f(FB, 84)
+            y = 640
             for i, ln in enumerate(lines):
+                fo = f(FB, 70)
                 col = WHITE if i == 0 else ORANGE
                 w = ld.textlength(ln, font=fo)
                 ld.text(((W - w) / 2, y), ln, font=fo, fill=col + (255,))
-                y += 108
-            ld.rectangle([W / 2 - 120, y + 20, W / 2 + 120, y + 28], fill=ORANGE)
+                y += 96
+            ld.rectangle([W / 2 - 120, y + 16, W / 2 + 120, y + 24], fill=ORANGE)
 
-        elif kind == "big":
-            y = 720
-            fo = f(FB, 64)
+        elif kind == "truth":
+            y = 680
             for i, ln in enumerate(lines):
-                col = WHITE if i == 0 else TEAL
+                fo = f(FB, 66)
                 w = ld.textlength(ln, font=fo)
-                ld.text(((W - w) / 2, y), ln, font=fo, fill=col + (255,))
-                y += 108
+                ld.text(((W - w) / 2, y), ln, font=fo, fill=WHITE + (255,))
+                y += 92
 
-        elif kind == "lines":
-            y = 700
-            for i, ln in enumerate(lines):
-                fo = f(FR, 52)
-                col = WHITE if i == 0 else LIGHT
-                w = ld.textlength(ln, font=fo)
-                ld.text(((W - w) / 2, y), ln, font=fo, fill=col + (255,))
-                y += 88
-            ld.rectangle([W / 2 - 260, y + 10, W / 2 + 260, y + 14], fill=(60, 68, 84))
+        elif kind == "gap":
+            y = 620
+            fo0 = f(FR, 54)
+            w = ld.textlength(lines[0], font=fo0)
+            ld.text(((W - w) / 2, y), lines[0], font=fo0, fill=LIGHT + (255,))
+            y += 80
+            w = ld.textlength(lines[1], font=fo0)
+            ld.text(((W - w) / 2, y), lines[1], font=fo0, fill=LIGHT + (255,))
+            y += 110
+            # the three-word verdict, stacked
+            for word in lines[2].rstrip(".").split(". "):
+                fo = f(FB, 64)
+                w = ld.textlength(word + ".", font=fo)
+                ld.text(((W - w) / 2, y), word + ".", font=fo, fill=ORANGE + (255,))
+                y += 92
 
-        elif kind == "punch":
-            y = 760
-            fo = f(FB, 64)
+        elif kind == "turn":
+            y = 620
+            styles = [(f(FR, 56), LIGHT), (f(FB, 62), TEAL), (f(FB, 66), ORANGE)]
             for i, ln in enumerate(lines):
-                col = WHITE if i == 0 else ORANGE
+                fo, col = styles[i]
                 w = ld.textlength(ln, font=fo)
                 ld.text(((W - w) / 2, y), ln, font=fo, fill=col + (255,))
                 y += 100
+            ld.rectangle([W / 2 - 110, y + 8, W / 2 + 110, y + 16], fill=TEAL)
 
-        elif kind == "turn":
-            y = 680
-            for i, ln in enumerate(lines):
-                fo = f(FB, 66) if i == 1 else f(FR, 52)
-                col = LIGHT if i == 0 else TEAL
+        elif kind == "needs":
+            y = 700
+            fo = f(FB, 62)
+            for ln in lines:
                 w = ld.textlength(ln, font=fo)
-                ld.text(((W - w) / 2, y), ln, font=fo, fill=col + (255,))
-                y += 92 if i == 0 else 110
-            ld.rectangle([W / 2 - 130, y, W / 2 + 130, y + 8], fill=TEAL)
+                ld.text(((W - w) / 2, y), ln, font=fo, fill=WHITE + (255,))
+                y += 104
 
         elif kind == "cta":
             y = 700
-            fo = f(FB, 80)
+            fo = f(FB, 76)
             w = ld.textlength(lines[0], font=fo)
             ld.text(((W - w) / 2, y), lines[0], font=fo, fill=WHITE + (255,))
-            y += 104
+            y += 100
             fo2 = f(FR, 44)
             w = ld.textlength(lines[1], font=fo2)
             ld.text(((W - w) / 2, y), lines[1], font=fo2, fill=LIGHT + (255,))
-            y += 120
+            y += 116
             pw, ph = 520, 96
             x0 = (W - pw) / 2
             ld.rounded_rectangle([x0, y, x0 + pw, y + ph], radius=48, fill=ORANGE)
@@ -144,7 +145,8 @@ def render(t):
     return img
 
 for i in range(TOTAL):
-    render(i / FPS).quantize(colors=64, method=Image.MEDIANCUT, dither=Image.NONE).save(
+    im = render(i / FPS)
+    im.quantize(colors=64, method=Image.MEDIANCUT, dither=Image.NONE).save(
         os.path.join(OUT, f"f{i:05d}.png"), optimize=True)
 
 print("frames:", TOTAL, "->", OUT)

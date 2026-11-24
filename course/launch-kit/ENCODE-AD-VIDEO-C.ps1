@@ -1,4 +1,4 @@
-# Encode Creative C (28s, 840 frames) - the festival angle.
+# Encode Creative C (30s, 900 frames) from the numbered frame sequence.
 # Put this file NEXT TO the ad-frames-c folder, then run it.
 
 $ErrorActionPreference = "Stop"
@@ -15,7 +15,7 @@ ffmpeg -y -framerate 30 -i ".\ad-frames-c\f%05d.png" -c:v libx264 -preset slow -
 
 if (Test-Path "ad-creative-c.mp4") {
     $kb = (Get-Item "ad-creative-c.mp4").Length / 1KB
-    Write-Host ("Done: ad-creative-c.mp4  {0:N0} KB  - 1080x1920, 28s, silent" -f $kb) -ForegroundColor Green
+    Write-Host ("Done: ad-creative-c.mp4  {0:N0} KB  - 1080x1920, 30s, silent" -f $kb) -ForegroundColor Green
 } else {
     Write-Host "Encoding failed. Copy the ffmpeg output above." -ForegroundColor Red
 }
