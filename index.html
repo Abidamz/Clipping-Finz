@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clipping-Finz — 30-Day Console</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#141822; --panel2:#1b2030; --line:#252c3d;
+    --text:#e8ecf5; --muted:#8b95ad; --accent:#3ddc97; --accent2:#5b8cff;
+    --warn:#ffb44d; --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    padding:16px 14px 64px}
+  h1{font-size:19px;margin:0 0 2px}
+  h2{font-size:13px;margin:0 0 12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+  .wrap{max-width:780px;margin:0 auto}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  .grid{display:grid;gap:10px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:540px){.g3{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .stat .v{font-size:19px;font-weight:650;margin-top:4px;font-variant-numeric:tabular-nums}
+  .bar{height:9px;background:#0f131c;border-radius:99px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0;transition:width .3s}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+  input,select,textarea,button{font:inherit;color:var(--text)}
+  input,select,textarea{width:100%;background:#0f131c;border:1px solid var(--line);border-radius:9px;padding:9px 10px;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent2)}
+  .field{flex:1;min-width:110px}
+  button{background:var(--accent2);border:0;border-radius:9px;padding:9px 14px;font-weight:600;cursor:pointer}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+  button.danger{background:transparent;border:1px solid #4a2630;color:var(--bad);padding:4px 10px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;border:1px solid var(--line)}
+  .pill.a{color:var(--accent)} .pill.b{color:var(--accent2)}
+  .tabs{display:flex;gap:6px;overflow:auto;margin-bottom:14px;padding-bottom:2px}
+  .tabs button{background:transparent;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+  .tabs button.on{background:var(--panel2);color:var(--text);border-color:var(--accent2)}
+  .hidden{display:none}
+  .task{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .task:last-child{border-bottom:0}
+  .task input{width:17px;height:17px;flex:0 0 auto;margin-top:2px;accent-color:var(--accent)}
+  .task span{font-size:14px}
+  .task.done span{color:var(--muted);text-decoration:line-through}
+  .phase{font-size:12px;color:var(--accent);margin:14px 0 4px;letter-spacing:.04em}
+  .tpl{background:#0f131c;border:1px solid var(--line);border-radius:10px;padding:12px;white-space:pre-wrap;font-size:13.5px;line-height:1.55}
+  .muted{color:var(--muted);font-size:12.5px}
+  .warnbox{border-left:3px solid var(--warn);background:#1a1508;padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px}
+  ul.list{margin:0;padding-left:18px}
+  ul.list li{margin:5px 0;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Clipping-Finz</h1>
+  <div class="sub">30-day income console · ₦2,000,000 target · saves on this device</div>
+
+  <div class="tabs" id="tabs">
+    <button data-tab="dash" class="on">Dashboard</button>
+    <button data-tab="money">Income</button>
+    <button data-tab="clips">Clips</button>
+    <button data-tab="plan">30-Day Plan</button>
+    <button data-tab="calc">Calculator</button>
+    <button data-tab="kit">Client Kit</button>
+  </div>
+
+  <section id="dash">
+    <div class="card">
+      <h2>Progress</h2>
+      <div class="grid g2">
+        <div class="stat"><div class="k">Earned</div><div class="v" id="d-earned">₦0</div></div>
+        <div class="stat"><div class="k">Remaining</div><div class="v" id="d-left">₦2,000,000</div></div>
+        <div class="stat"><div class="k">Days left</div><div class="v" id="d-days">30</div></div>
+        <div class="stat"><div class="k">Needed / day</div><div class="v" id="d-pace">₦66,667</div></div>
+      </div>
+      <div class="bar"><i id="d-bar"></i></div>
+      <div class="muted" id="d-note" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h2>Two streams</h2>
+      <div class="grid g2">
+        <div class="stat">
+          <div class="k">A · campaigns</div>
+          <div class="v" id="s-a">₦0</div>
+          <div class="bar"><i id="bar-a"></i></div>
+          <div class="muted" style="margin-top:6px">target ₦500,000</div>
+        </div>
+        <div class="stat">
+          <div class="k">B · client edits</div>
+          <div class="v" id="s-b">₦0</div>
+          <div class="bar"><i id="bar-b"></i></div>
+          <div class="muted" style="margin-top:6px">target ₦1,500,000</div>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:10px">Stream B is the reliable one — a client pays for the edit, not for luck.</div>
+    </div>
+
+    <div class="card">
+      <h2>Start date</h2>
+      <div class="row">
+        <div class="field"><label>Day 1 of your 30</label><input type="date" id="startDate"></div>
+        <button class="ghost" id="resetStart">Reset to today</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="money" class="hidden">
+    <div class="card">
+      <h2>Log a payment</h2>
+      <div class="row">
+        <div class="field"><label>Date</label><input type="date" id="m-date"></div>
+        <div class="field"><label>Stream</label>
+          <select id="m-stream">
+            <option value="A">A · campaign payout</option>
+            <option value="B">B · client edit</option>
+          </select>
+        </div>
+        <div class="field"><label>Amount (₦)</label><input type="number" id="m-amount" min="0" step="500" placeholder="25000"></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div class="field" style="flex:2"><label>Note</label><input id="m-note" placeholder="Client name / campaign"></div>
+        <button id="m-add">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Payments</h2>
+      <table id="m-table"><thead><tr><th>Date</th><th>Stream</th><th>Note</th><th class="num">Amount</th><th></th></tr></thead><tbody></tbody></table>
+      <div class="muted" id="m-empty" style="margin-top:10px">Nothing logged yet.</div>
+    </div>
+  </section>
+
+  <section id="clips" class="hidden">
+    <div class="card">
+      <h2>Log clips produced</h2>
+      <div class="row">
+        <div class="field"><label>Date</label><input type="date" id="c-date"></div>
+        <div class="field"><label>Clips</label><input type="number" id="c-count" min="0" placeholder="4"></div>
+        <div class="field"><label>Views (optional)</label><input type="number" id="c-views" min="0" placeholder="12000"></div>
+        <button id="c-add">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Totals</h2>
+      <div class="grid g3">
+        <div class="stat"><div class="k">Clips</div><div class="v" id="c-total">0</div></div>
+        <div class="stat"><div class="k">Views</div><div class="v" id="c-viewtotal">0</div></div>
+        <div class="stat"><div class="k">Views / clip</div><div class="v" id="c-avg">0</div></div>
+      </div>
+      <table id="c-table" style="margin-top:12px"><thead><tr><th>Date</th><th class="num">Clips</th><th class="num">Views</th><th></th></tr></thead><tbody></tbody></table>
+      <div class="muted" id="c-empty" style="margin-top:10px">Nothing logged yet.</div>
+    </div>
+  </section>
+
+  <section id="plan" class="hidden">
+    <div class="card">
+      <h2>30-day execution</h2>
+      <div id="planBody"></div>
+      <div class="muted" id="planCount" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section id="calc" class="hidden">
+    <div class="card">
+      <h2>Campaign maths</h2>
+      <div class="row">
+        <div class="field"><label>Rate per 1,000 views (₦)</label><input type="number" id="k-rate" value="3000" min="1"></div>
+        <div class="field"><label>Target (₦)</label><input type="number" id="k-target" value="2000000" min="1"></div>
+      </div>
+      <div class="stat" style="margin-top:10px">
+        <div class="k">Views needed</div>
+        <div class="v" id="k-out">666,667</div>
+      </div>
+      <div class="muted" id="k-note" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h2>Client work maths</h2>
+      <div class="row">
+        <div class="field"><label>Price per clip (₦)</label><input type="number" id="p-rate" value="5000" min="1"></div>
+        <div class="field"><label>Clips per client / month</label><input type="number" id="p-clips" value="8" min="1"></div>
+        <div class="field"><label>Clients</label><input type="number" id="p-clients" value="3" min="1"></div>
+      </div>
+      <div class="stat" style="margin-top:10px">
+        <div class="k">Monthly revenue</div>
+        <div class="v" id="p-out">₦120,000</div>
+      </div>
+      <div class="muted" id="p-note" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <section id="kit" class="hidden">
+    <div class="card">
+      <h2>Pricing to quote</h2>
+      <table>
+        <thead><tr><th>Package</th><th>What they get</th><th class="num">Price</th></tr></thead>
+        <tbody>
+          <tr><td>Starter</td><td>3 clips from one long video</td><td class="num">₦10,000</td></tr>
+          <tr><td>Weekly</td><td>8 clips + captions + hooks</td><td class="num">₦25,000</td></tr>
+          <tr><td>Monthly</td><td>20 clips, 2 revisions each</td><td class="num">₦60,000</td></tr>
+        </tbody>
+      </table>
+      <div class="muted" style="margin-top:10px">Quote a price, not a promise about views. Never charge for "guaranteed virality".</div>
+    </div>
+
+    <div class="card">
+      <h2>Outreach — WhatsApp / DM</h2>
+      <div class="tpl" id="tpl1">Hi [Name], I clip podcasts into short-form videos for TikTok, Reels and Shorts.
+
+I made 3 clips from your last episode as a sample — no charge, no strings: [link]
+
+If you like them, I do [X] clips a month for ₦[price]. You keep all the clips and the raw files.
+
+Want me to send the samples?</div>
+      <button class="ghost" style="margin-top:10px" data-copy="tpl1">Copy</button>
+    </div>
+
+    <div class="card">
+      <h2>Outreach — email</h2>
+      <div class="tpl" id="tpl2">Subject: 3 free clips from your episode on [topic]
+
+Hi [Name],
+
+I turn long podcasts and interviews into vertical clips for TikTok, Instagram Reels and YouTube Shorts.
+
+I made three from your recent episode with [guest/topic] — here they are: [link]
+
+If they fit your style, my packages start at ₦[price] for [X] clips a month. You own everything I deliver.
+
+Happy to make the first batch free so you can judge the quality.
+
+[Your name]
+[Phone / WhatsApp]</div>
+      <button class="ghost" style="margin-top:10px" data-copy="tpl2">Copy</button>
+    </div>
+
+    <div class="card">
+      <h2>Follow-up (48h later)</h2>
+      <div class="tpl" id="tpl3">Hi [Name], just floating this back up — did the clips land okay?
+
+If the style isn't right I can re-cut them, no problem. If you'd rather not, just say the word and I'll stop.</div>
+      <button class="ghost" style="margin-top:10px" data-copy="tpl3">Copy</button>
+    </div>
+
+    <div class="card">
+      <h2>Campaign caption bank</h2>
+      <div class="tpl" id="tpl4">1. DMZ is back and the briefing goes hard. Season 1 looking different @callofduty #Ad
+2. Sat through the whole DMZ intel drop. This is the part everyone will be talking about @callofduty #Ad
+3. MW4 Season 1 DMZ briefing — no notes @callofduty #Ad
+4. This is the DMZ clip I've been waiting for since the last one ended @callofduty #Ad
+5. Nobody's ready for how DMZ plays now @callofduty #Ad
+6. Watched this three times. DMZ in MW4 is not a small update @callofduty #Ad
+7. If you played DMZ before, this is your reason to come back @callofduty #Ad
+8. Wait for the last few seconds of this briefing @callofduty #Ad
+9. The detail nobody caught in the DMZ intel @callofduty #Ad
+10. POV: DMZ is back and you're not ready @callofduty #Ad</div>
+      <button class="ghost" style="margin-top:10px" data-copy="tpl4">Copy</button>
+    </div>
+
+    <div class="card">
+      <h2>Before you submit a clip</h2>
+      <ul class="list">
+        <li>Footage is <b>only</b> from the official content folder</li>
+        <li><b>@callofduty</b> tagged on TikTok <b>and</b> Instagram</li>
+        <li><b>#Ad</b> in the caption</li>
+        <li>Caption is your own words and matches the clip</li>
+        <li>No invented facts, stats, or dates</li>
+        <li>9:16, audio audible, no watermarks</li>
+        <li>Submitted separately on <b>both</b> platforms</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Before you join any campaign</h2>
+      <ul class="list">
+        <li>Does it pay on <b>verified views</b>, and who verifies them?</li>
+        <li>What is the <b>payout threshold</b>? Some never pay below 100k views.</li>
+        <li>Do you have <b>written rights</b> to clip the creator's footage?</li>
+        <li>Does it ask you to <b>pay to join</b>? Red flag, not a campaign.</li>
+        <li>Does it promise <b>guaranteed income</b>? Nobody can guarantee views.</li>
+        <li>Do you meet the <b>age requirement</b>? If not, involve a trusted adult.</li>
+      </ul>
+      <div class="warnbox" style="margin-top:12px">
+        Views are not income until they clear the campaign's threshold. Treat every payout as zero until it is in your account.
+      </div>
+    </div>
+  </section>
+
+  <div class="muted" style="text-align:center;margin-top:20px">
+    <button class="ghost" id="export">Export data</button>
+    <button class="danger" id="wipe" style="margin-left:6px">Clear all</button>
+  </div>
+</div>
+
+<script>
+const KEY='clippingfinz.v1', TARGET=2000000, TARGET_A=500000, TARGET_B=1500000, DAYS=30;
+const naira=n=>'₦'+Math.round(n).toLocaleString('en-NG');
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,9);
+
+const PLAN=[
+ ['Days 1–3 · Learn the tool',[
+  'Install CapCut, watch one 20-minute tutorial',
+  'Make 10 sample clips from footage you own or are allowed to use',
+  'Pick 3 styles: talking-head, reaction, punchy-quote']],
+ ['Days 4–7 · Build the portfolio',[
+  'Post all 10 clips to one page as proof of work',
+  'Write your 3-package price list',
+  'List 40 potential clients (podcasters, coaches, small businesses)']],
+ ['Days 8–14 · First money',[
+  'Send 10 outreach messages a day',
+  'Join 2 legit campaigns and read the payout rules fully',
+  'Confirm Nigeria payout status on every campaign before posting',
+  'Close and deliver your first paid job']],
+ ['Days 15–21 · Increase volume',[
+  'Keep 3–5 clips a day for your own page',
+  'Ask every satisfied client for a referral',
+  'Raise your price once you have 2 happy clients']],
+ ['Days 22–30 · Deliver and collect',[
+  'Finish all outstanding deliverables',
+  'Invoice and chase every unpaid balance',
+  'Ask for monthly retainers before the deadline']]
+];
+
+let S=load();
+function load(){
+  try{
+    const r=JSON.parse(localStorage.getItem(KEY)||'{}');
+    return {start:r.start||today(),entries:r.entries||[],clips:r.clips||[],checks:r.checks||{}};
+  }catch(e){return {start:today(),entries:[],clips:[],checks:{}};}
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(S));}
+function daysLeft(){
+  const s=new Date(S.start+'T00:00:00'), n=new Date(today()+'T00:00:00');
+  return Math.max(1,DAYS-Math.floor((n-s)/86400000));
+}
+function sum(st){return S.entries.filter(e=>!st||e.stream===st).reduce((t,e)=>t+e.amount,0);}
+
+function renderDash(){
+  const earned=sum(), left=Math.max(0,TARGET-earned), d=daysLeft();
+  document.getElementById('d-earned').textContent=naira(earned);
+  document.getElementById('d-left').textContent=naira(left);
+  document.getElementById('d-days').textContent=d;
+  document.getElementById('d-pace').textContent=naira(left/d);
+  document.getElementById('d-bar').style.width=Math.min(100,earned/TARGET*100)+'%';
+  const a=sum('A'), b=sum('B');
+  document.getElementById('s-a').textContent=naira(a);
+  document.getElementById('s-b').textContent=naira(b);
+  document.getElementById('bar-a').style.width=Math.min(100,a/TARGET_A*100)+'%';
+  document.getElementById('bar-b').style.width=Math.min(100,b/TARGET_B*100)+'%';
+  const note=document.getElementById('d-note');
+  if(earned>=TARGET) note.textContent='Target hit. Anything now is buffer.';
+  else if(earned===0) note.textContent='Nothing logged yet — the first client payment is the only number that matters.';
+  else note.textContent='At this pace you need '+naira(left/d)+' a day for the next '+d+' days.';
+  document.getElementById('startDate').value=S.start;
+}
+
+function renderMoney(){
+  const tb=document.querySelector('#m-table tbody'); tb.innerHTML='';
+  [...S.entries].sort((x,y)=>y.date.localeCompare(x.date)).forEach(e=>{
+    const tr=document.createElement('tr');
+    const tag=e.stream==='A'?'<span class="pill a">A</span>':'<span class="pill b">B</span>';
+    tr.innerHTML='<td>'+e.date+'</td><td>'+tag+'</td><td>'+(e.note||'—')+
+      '</td><td class="num">'+naira(e.amount)+'</td><td><button class="danger" data-del="'+e.id+'">×</button></td>';
+    tb.appendChild(tr);
+  });
+  document.getElementById('m-empty').style.display=S.entries.length?'none':'block';
+}
+
+function renderClips(){
+  const tb=document.querySelector('#c-table tbody'); tb.innerHTML='';
+  [...S.clips].sort((x,y)=>y.date.localeCompare(x.date)).forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+c.date+'</td><td class="num">'+c.count+'</td><td class="num">'+
+      (c.views||0).toLocaleString()+'</td><td><button class="danger" data-delc="'+c.id+'">×</button></td>';
+    tb.appendChild(tr);
+  });
+  const total=S.clips.reduce((t,c)=>t+c.count,0);
+  const views=S.clips.reduce((t,c)=>t+(c.views||0),0);
+  document.getElementById('c-total').textContent=total;
+  document.getElementById('c-viewtotal').textContent=views.toLocaleString();
+  document.getElementById('c-avg').textContent=total?Math.round(views/total).toLocaleString():'0';
+  document.getElementById('c-empty').style.display=S.clips.length?'none':'block';
+}
+
+function renderPlan(){
+  const body=document.getElementById('planBody'); body.innerHTML='';
+  let done=0, all=0;
+  PLAN.forEach(([phase,tasks])=>{
+    const h=document.createElement('div'); h.className='phase'; h.textContent=phase; body.appendChild(h);
+    tasks.forEach(t=>{
+      all++;
+      const id=phase+'::'+t, isDone=!!S.checks[id];
+      if(isDone) done++;
+      const d=document.createElement('label');
+      d.className='task'+(isDone?' done':'');
+      d.innerHTML='<input type="checkbox" '+(isDone?'checked':'')+'><span>'+t+'</span>';
+      d.querySelector('input').addEventListener('change',ev=>{
+        S.checks[id]=ev.target.checked; save(); renderPlan();
+      });
+      body.appendChild(d);
+    });
+  });
+  document.getElementById('planCount').textContent=done+' of '+all+' done';
+}
+
+function renderCalc(){
+  const rate=+document.getElementById('k-rate').value||1;
+  const target=+document.getElementById('k-target').value||TARGET;
+  const views=target/rate*1000;
+  document.getElementById('k-out').textContent=Math.round(views).toLocaleString();
+  document.getElementById('k-note').textContent=
+    'That is '+Math.round(views/DAYS).toLocaleString()+' views a day for 30 days, on a rate you have not been paid yet.';
+  const p=+document.getElementById('p-rate').value||0;
+  const pc=+document.getElementById('p-clips').value||0;
+  const cl=+document.getElementById('p-clients').value||0;
+  const monthly=p*pc*cl;
+  document.getElementById('p-out').textContent=naira(monthly);
+  document.getElementById('p-note').textContent=monthly
+    ? 'You would need '+Math.ceil(TARGET/monthly)+' such months to reach ₦2m.' : '';
+}
+
+function renderAll(){renderDash();renderMoney();renderClips();renderPlan();renderCalc();}
+
+document.querySelectorAll('#tabs button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    ['dash','money','clips','plan','calc','kit'].forEach(id=>
+      document.getElementById(id).classList.toggle('hidden',id!==b.dataset.tab));
+  });
+});
+
+document.getElementById('startDate').addEventListener('change',e=>{
+  S.start=e.target.value||today(); save(); renderDash();
+});
+document.getElementById('resetStart').addEventListener('click',()=>{
+  S.start=today(); save(); renderDash();
+});
+
+document.getElementById('m-date').value=today();
+document.getElementById('c-date').value=today();
+
+document.getElementById('m-add').addEventListener('click',()=>{
+  const amount=+document.getElementById('m-amount').value;
+  if(!amount||amount<=0) return;
+  S.entries.push({
+    id:uid(),
+    date:document.getElementById('m-date').value||today(),
+    stream:document.getElementById('m-stream').value,
+    amount,
+    note:document.getElementById('m-note').value.trim()
+  });
+  save();
+  document.getElementById('m-amount').value='';
+  document.getElementById('m-note').value='';
+  renderAll();
+});
+
+document.querySelector('#m-table').addEventListener('click',e=>{
+  const id=e.target.dataset.del; if(!id) return;
+  S.entries=S.entries.filter(x=>x.id!==id); save(); renderAll();
+});
+
+document.getElementById('c-add').addEventListener('click',()=>{
+  const count=+document.getElementById('c-count').value;
+  if(!count||count<=0) return;
+  S.clips.push({
+    id:uid(),
+    date:document.getElementById('c-date').value||today(),
+    count,
+    views:+document.getElementById('c-views').value||0
+  });
+  save();
+  document.getElementById('c-count').value='';
+  document.getElementById('c-views').value='';
+  renderAll();
+});
+
+document.querySelector('#c-table').addEventListener('click',e=>{
+  const id=e.target.dataset.delc; if(!id) return;
+  S.clips=S.clips.filter(x=>x.id!==id); save(); renderAll();
+});
+
+['k-rate','k-target','p-rate','p-clips','p-clients'].forEach(id=>
+  document.getElementById(id).addEventListener('input',renderCalc));
+
+document.querySelectorAll('[data-copy]').forEach(b=>{
+  b.addEventListener('click',async()=>{
+    const text=document.getElementById(b.dataset.copy).textContent;
+    try{
+      await navigator.clipboard.writeText(text);
+      const old=b.textContent; b.textContent='Copied';
+      setTimeout(()=>b.textContent=old,1200);
+    }catch(e){
+      const r=document.createRange();
+      r.selectNodeContents(document.getElementById(b.dataset.copy));
+      const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      b.textContent='Selected — press Ctrl+C';
+    }
+  });
+});
+
+document.getElementById('export').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='clipping-finz-'+today()+'.json';
+  a.click();
+});
+document.getElementById('wipe').addEventListener('click',()=>{
+  if(confirm('Delete all logged income, clips and checklist progress?')){
+    S={start:today(),entries:[],clips:[],checks:{}};
+    save(); renderAll();
+  }
+});
+
+renderAll();
+</script>
+</body>
+</html>
