@@ -72,3 +72,18 @@ to join.
 
 The scaffold and console are in place. Next: hook bank, posting schedule, and a
 per-campaign payout estimator.
+
+## Clipping Playbook (course)
+
+`course/index.html` — a 30-lesson, 8-module course built from the clipping threads
+the user collected, with the unverifiable parts stripped out.
+
+- Modules: orientation, account setup, campaigns, cutting, testing, distribution,
+  getting paid, client work.
+- Progress checkboxes persist in localStorage; left nav tracks completion.
+- Two appendices: **Cut list** (what was removed and why — location spoofing,
+  earnings screenshots, paywall teases, multi-account farms, crypto QR Tweets) and
+  **Sources** (every thread mapped to what it actually contributed, with a weight
+  rating).
+- Every lesson ends with a drill and, where relevant, a "watch out" box.
+- No external dependencies; open the file directly in a browser.

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clipping Playbook — Zero to First Payout</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#141822; --panel2:#1b2030; --line:#252c3d;
+    --text:#e8ecf5; --muted:#8b95ad; --accent:#3ddc97; --accent2:#5b8cff;
+    --warn:#ffb44d; --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  @media(max-width:820px){.shell{grid-template-columns:1fr}}
+
+  aside{background:var(--panel);border-right:1px solid var(--line);padding:18px 16px 40px;
+    height:100vh;overflow:auto;position:sticky;top:0}
+  @media(max-width:820px){aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}}
+  aside h1{font-size:16px;margin:0 0 2px}
+  aside .tag{color:var(--muted);font-size:12px;margin-bottom:14px}
+  .prog{height:8px;background:#0f131c;border-radius:99px;border:1px solid var(--line);overflow:hidden}
+  .prog > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0;transition:width .3s}
+  .progTxt{font-size:12px;color:var(--muted);margin:6px 0 16px}
+  .mod{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    margin:16px 0 6px;padding-top:10px;border-top:1px solid var(--line)}
+  .navbtn{display:block;width:100%;text-align:left;background:transparent;border:0;color:var(--text);
+    font:inherit;font-size:13.5px;padding:7px 9px;border-radius:8px;cursor:pointer;line-height:1.35}
+  .navbtn:hover{background:var(--panel2)}
+  .navbtn.on{background:var(--panel2);box-shadow:inset 2px 0 0 var(--accent2)}
+  .navbtn.done{color:var(--muted)}
+  .navbtn.done::after{content:" ✓";color:var(--accent)}
+
+  main{padding:28px 32px 80px;max-width:760px}
+  @media(max-width:600px){main{padding:20px 16px 60px}}
+  .crumb{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent2);margin-bottom:6px}
+  h2{font-size:24px;margin:0 0 6px;line-height:1.25}
+  .goal{color:var(--muted);font-size:14px;margin-bottom:22px}
+  h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:24px 0 10px}
+  ol.steps{margin:0;padding-left:20px}
+  ol.steps li{margin:11px 0}
+  ol.steps li b{color:#fff}
+  .box{border-radius:10px;padding:13px 15px;font-size:13.5px;margin:18px 0;line-height:1.55}
+  .drill{background:#0f1620;border-left:3px solid var(--accent2)}
+  .drill .lbl{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent2);margin-bottom:5px}
+  .warnbox{background:#1a1508;border-left:3px solid var(--warn)}
+  .warnbox .lbl{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--warn);margin-bottom:5px}
+  .badbox{background:#1c0f13;border-left:3px solid var(--bad)}
+  .badbox .lbl{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--bad);margin-bottom:5px}
+  .src{font-size:12px;color:var(--muted);margin-top:26px;padding-top:14px;border-top:1px solid var(--line)}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+  pre{background:#0f131c;border:1px solid var(--line);border-radius:9px;padding:12px;
+    overflow:auto;font-size:12.5px;line-height:1.5;margin:10px 0}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+  th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  .row{display:flex;gap:9px;align-items:center;margin-top:30px;flex-wrap:wrap}
+  button.btn{background:var(--accent2);border:0;border-radius:9px;padding:10px 16px;
+    font:inherit;font-weight:600;color:var(--text);cursor:pointer}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--text);
+    border-radius:9px;padding:10px 16px;font:inherit;cursor:pointer}
+  button.done{background:var(--accent);color:#06110c}
+  .muted{color:var(--muted);font-size:12.5px}
+  ul.plain{margin:8px 0;padding-left:18px;font-size:13.5px}
+  ul.plain li{margin:6px 0}
+  a{color:var(--accent2)}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside>
+  <h1>Clipping Playbook</h1>
+  <div class="tag">Zero to first payout · 30 lessons</div>
+  <div class="prog"><i id="pbar"></i></div>
+  <div class="progTxt" id="ptxt">0 of 30 complete</div>
+  <div id="nav"></div>
+</aside>
+
+<main id="main"></main>
+
+</div>
+
+<script>
+const KEY = 'clipdrops.course.v1';
+
+const MODULES = [
+  {
+    title: 'Module 1 · Orientation',
+    lessons: [
+      {
+        id: 'l1',
+        title: 'What clipping actually pays for',
+        goal: 'Understand the transaction before you spend a single hour on it.',
+        steps: [
+          '<b>Clipping is distribution, not content creation.</b> A brand or creator has footage and wants reach. You cut it into short vertical clips and post them. They pay per 1,000 views the post earns.',
+          '<b>The unit is CPM — cost per mille, i.e. per thousand views.</b> Rates run roughly $0.40 to $3.00 per 1K across platforms. Gaming and crypto campaigns sit at the top of that range; generic brand campaigns cluster around $1.',
+          '<b>You are not paid for the edit. You are paid for the view.</b> That means you can do everything right and still earn nothing if the hook does not land. This is the central risk of the model and no tutorial will remove it.',
+          '<b>There is no audience requirement.</b> New accounts can earn. What matters is whether the platform pushes the clip, and the platform decides that in the first two seconds.',
+          '<b>Your first job is not to learn editing software.</b> It is to learn which 3 seconds of a 60-second video will stop a thumb. That is a different skill and it is free to practise.'
+        ],
+        drill: 'Open any social feed. Count how many videos you scroll past before one stops you, and note what stopped you — a face, a number, motion, a claim. Write down five. That list is your first hook bank.',
+        warn: 'Anyone quoting you a fixed monthly figure is selling. The numbers in the threads you saved ($26,403/month, "$6K in 90 days", "$1.6K in two months") are self-reported, unverifiable, and usually attached to something for sale.',
+        source: 'Primal thread (CPM mechanics, no-face-needed); Netokrypto (self-reported $1.6K in ~2 months on Content Rewards); Maran thread (rate ranges across platforms).'
+      },
+      {
+        id: 'l2',
+        title: 'The honest ceiling, in numbers',
+        goal: 'Know what a good month and a bad month look like before you plan your rent around either.',
+        steps: [
+          '<b>Do the arithmetic once and then stop.</b> $2.00 per 1K views = $2 for 1,000 views = $20 for 10,000 views. Your ₦2,000,000 target is roughly $1,300 at ₦1,500/$ — about <b>650,000 TikTok views</b> across the month, or around 22,000 a day.',
+          '<b>That is not a beginner month.</b> It is a sustained-hit month. Most people who post daily for 30 days land somewhere between ₦120,000 and ₦600,000, and a real number of them land at ₦0 because a clip got rejected or never accumulated views.',
+          '<b>Per-platform caps exist.</b> Many campaigns cap payouts per clip (the MW4 campaign caps at $1,200 per platform) and per account. You cannot walk one viral clip to the target.',
+          '<b>Minimum thresholds cut both ways.</b> If a campaign pays from $6 (about 3,000 views), small clips still count. If a campaign only pays above 100,000 views, a 40,000-view clip is worth exactly nothing.',
+          '<b>The reliable money is boring.</b> Client editing — a person pays you a fixed price for a fixed number of clips — does not depend on the algorithm at all. That is why the console splits your target into campaigns (₦500k) and client work (₦1.5m).'
+        ],
+        drill: 'Open the console Calculator tab. Set the rate to your campaign\u2019s real rate and the target to your honest goal for 30 days, not the wedding number. Note how many views a day that needs. If the number makes you uncomfortable, that is the correct response.',
+        warn: 'Do not build a plan that only works if one clip goes viral. Build a plan that survives if none do — that means client work running in parallel from week two.',
+        source: 'Maran (rate ranges and thresholds); campaign brief for MW4 DMZ ($2.00/1K TikTok, $1.50/1K Instagram, $6 and $4.50 minimums).'
+      },
+      {
+        id: 'l3',
+        title: 'Pick one lane and stay in it',
+        goal: 'Choose a niche you can source footage for weekly without permission problems.',
+        steps: [
+          '<b>One niche, two platforms.</b> The threads all agree on this and they are right: two campaigns in one vertical beats ten joined at once. Focused accounts get pushed to focused audiences.',
+          '<b>Choose based on source supply, not passion.</b> Ask: can I get legally clip-able footage every week? Official game campaigns, creator-submitted footage, podcasts that invite clipping, and brand campaigns all have clear permission. Random YouTube videos do not.',
+          '<b>Gaming is the best starting lane if you are in a campaign</b> — the footage is provided, the rights are settled, the payout rate is high, and you do not need to appear on camera.',
+          '<b>Check the creator is not banned on your target platform.</b> If they are, your clips inherit the problem and get suppressed before you post. Verify the account exists and posts normally.',
+          '<b>Your page name should survive a pivot.</b> A name like <span class="mono">codclipsng</span> locks you to one game and one country. A name like <span class="mono">clipdropsonly</span> does not.'
+        ],
+        drill: 'Write down three candidate niches. For each, name the exact source of clip-able footage and the campaign or permission that covers it. If you cannot name the source in one sentence, cross it off.',
+        warn: '"No permission needed, it is fair use" is not a legal position you should rely on when the money is real. Campaign footage comes with permission. Everything else is a judgement call with a takedown risk.',
+        source: 'Maran ("pick 2 in one niche"); Primal (no face, no audience needed); Luka (check whether the creator is banned on the platform you post to).'
+      }
+    ]
+  },
+  {
+    title: 'Module 2 · Set up like a page that lasts',
+    lessons: [
+      {
+        id: 'l4',
+        title: 'Page identity',
+        goal: 'Look like a media account, not a personal account with clips bolted on.',
+        steps: [
+          '<b>Name field and handle do different jobs.</b> The name field (<span class="mono">CLIP DROPS</span>) is what search matches and what reads well in a caption. The handle (<span class="mono">@clipdropsonly</span>) is what you can still get. Set both.',
+          '<b>Match the avatar and banner.</b> Logo avatar, banner wordmark, same two colours. Your branding assets are already in the repo — <span class="mono">branding/pfp.png</span> and <span class="mono">branding/banner.png</span>.',
+          '<b>Bio states what you post, then how to reach you.</b> Three lines maximum. End with "DM for collabs" — that single line is how client work finds you, and client work is the part of the plan that does not depend on luck.',
+          '<b>No campaign language in the bio.</b> Never "sponsored", never "#Ad". Disclosure belongs on each post. A bio that announces advertising reads as a page that will post ads, which suppresses it.',
+          '<b>Set the account to a creator/ professional category</b> (Digital Creator). It unlocks analytics, which you need for the testing module later.'
+        ],
+        drill: 'Fill the name, handle, avatar, banner and all three bio lines before you post anything. Then look at the profile on a phone, not a desktop — that is how a stranger will see it.',
+        warn: 'Do not link to anything you would not want a brand to open. One link, and only when you have something worth sending (a portfolio or a WhatsApp).',
+        source: 'TPurity (username matches niche, clean pic, bio that protects you); Luka (professional account, Digital Creator).'
+      },
+      {
+        id: 'l5',
+        title: 'Which platforms, in what order',
+        goal: 'Pick two platforms and stop there for the first 30 days.',
+        steps: [
+          '<b>TikTok first</b> if the campaign pays best there and the footage is short-form native. It has the fastest cold-start distribution of any platform — a brand-new account can hit 100k views.',
+          '<b>Instagram Reels second.</b> Lower rate on the MW4 campaign ($1.50 vs $2.00 per 1K) but you reuse the identical file, so the second platform costs you one upload, not one edit.',
+          '<b>YouTube Shorts third, only if a campaign allows it.</b> Slower to start, longer tail. Worth it for evergreen footage, not worth splitting your attention in week one.',
+          '<b>X is a different game.</b> Clipping on X pays well and native clips credit the creator automatically, but the paying campaigns there are mostly crypto and the audience behaves differently. Do not mix it into your first 30 days.',
+          '<b>Post the same file to both.</b> No re-export per platform, and no platform-specific watermark — ever.'
+        ],
+        drill: 'Rank TikTok, Instagram, YouTube and X by (1) campaign rate, (2) how fast you can make an account that will not be flagged, (3) how much you personally use it. Post to the top two only.',
+        warn: 'Watermarked reposts are the fastest route to a rejected submission. TikTok watermarks on an Instagram Reel read as stolen content to both the algorithm and the campaign reviewer.',
+        source: 'Primal (open only the accounts the campaign allows); Maran (platform-specific campaign boards); MW4 campaign brief (TikTok and Instagram rates).'
+      },
+      {
+        id: 'l6',
+        title: 'Warming up a new account',
+        goal: 'Avoid the trap where every clip you post caps at 200 views.',
+        steps: [
+          '<b>Do not post on day one.</b> A brand-new account that starts uploading clips immediately looks like a bot to the algorithm. Five days of normal use costs you nothing and is the single highest-leverage wait in this course.',
+          '<b>Day 1:</b> scroll 30–60 minutes in your niche. Watch clips to the end, like a few, follow a handful of accounts.',
+          '<b>Day 2:</b> scroll, like, save, and share one or two clips.',
+          '<b>Day 3:</b> comment once or twice, follow more niche accounts, post a story.',
+          '<b>Days 4–5:</b> repeat day 3. By day 5 the account has a behavioural history and the algorithm knows roughly who to show it to.',
+          '<b>The signal it worked:</b> on Instagram, you start getting follows before you have posted anything. That means the account is being treated as a real user.'
+        ],
+        drill: 'Set a 5-day countdown on your phone. Log each day in the console Clips tab notes. Post nothing until day 5 ends.',
+        warn: 'The claim that five days of scrolling "unlocks" higher reach is folklore, not documented platform behaviour. What is documented is that brand-new accounts posting identical-looking content on day one get throttled. The wait is cheap insurance, not a guarantee.',
+        source: 'Luka (detailed 5-day routine); Primal (do not create an account and post immediately).'
+      },
+      {
+        id: 'l7',
+        title: 'Device hygiene, and the line not to cross',
+        goal: 'Keep accounts from being linked to each other, without breaking platform rules or campaign terms.',
+        steps: [
+          '<b>One phone for clipping.</b> Not because you are hiding anything, but because stacking many accounts on one device with one IP posting all day is a recognisable bot pattern, and you will lose accounts for it.',
+          '<b>Keep the device otherwise normal.</b> Real apps, real scrolling, no automation tools, no bulk schedulers that post identical content across accounts.',
+          '<b>Never buy views, followers, or engagement.</b> Every platform named in these threads verifies views before paying, and purchased views fail verification. You lose the payout and the account.',
+          '<b>Never use a VPN or proxy to fake a country.</b> Campaigns pay on the audience\u2019s country data. Spoofed locations either produce "no country data" — which pays nothing — or trip fraud screening. This is the single most expensive piece of advice in the threads you saved.',
+          '<b>Never run accounts you did not make, or share logins with a "campaign manager".</b> No legitimate campaign needs your password.'
+        ],
+        drill: 'Audit what you already have installed: any auto-poster, any view-bot, any VPN set to another country. Remove them before you post. Write down the one phone you will use.',
+        warn: 'Two of your saved threads teach location spoofing — ordering a foreign SIM, a paid VPN, disabling location services, and setting the phone to another country. That is a ToS violation on every platform involved, and it specifically breaks the campaign rule you are working under. Skip it. Your campaign pays Nigerian views.',
+        source: 'Luka (burner phone, one account per device); Wealth_Tactics_ (free proxy + location spoofing) and Luka (foreign SIM + paid VPN) — both rejected here, see the "Cut list" page.'
+      }
+    ]
+  },
+  {
+    title: 'Module 3 · Find campaigns that actually pay',
+    lessons: [
+      {
+        id: 'l8',
+        title: 'Where the campaigns live',
+        goal: 'Know the boards, the typical rates, and which ones let you withdraw small amounts.',
+        steps: [
+          '<b>Content Rewards</b> (run on Whop) — the biggest board, most agency campaigns, typically $1–$1.25 per 1K, withdraw from about $1. Sign up as a Creator, then use Discover.',
+          '<b>Whop</b> is the payout rail for Content Rewards and many agencies. Nigerian bank withdrawal is supported. You need this account even if you join campaigns elsewhere.',
+          '<b>Vyro</b> — roughly $1–$2.50 per 1K, weekly payouts, $10 minimum. <b>Clipster</b> — median about $1, biggest campaign board. <b>Clipping.net</b> — $0.40–$3, large brand campaigns.',
+          '<b>Clipping Culture</b> is the board your MW4 DMZ campaign sits on. It pays at the top of the range for gaming and does not require a dedicated page.',
+          '<b>Trapster</b> for game studios specifically (studios set the CPM, Stripe payouts). <b>Clipur</b> and <b>Promote.fun</b> are X/Twitter and crypto-oriented — different skill set, ignore for now.'
+        ],
+        drill: 'Create Content Rewards and Whop accounts today. Browse Discover without joining anything. Note the three campaigns with the highest rate that your accounts are eligible for.',
+        warn: 'Rates in this lesson come from a third-party thread and change per campaign. Always read the live brief — the number in a tweet is not the number you will be paid.',
+        source: 'Maran thread (rates, minimums, board list); Primal (Content Rewards + Whop signup flow); Clipping Culture (MW4 campaign).'
+      },
+      {
+        id: 'l9',
+        title: 'Read the brief like a contract',
+        goal: 'Stop failing the review stage, which is where most beginners actually lose money.',
+        steps: [
+          '<b>Extract five facts before you cut anything:</b> the rate, the payout cap, the minimum threshold, the platforms allowed, and the required tags and disclosure.',
+          '<b>Then extract the restrictions:</b> what footage is permitted, whether watermarks are banned, whether the caption must be original, whether a specific page or account type is required, and what counts as an invalid view.',
+          '<b>Check the remaining budget.</b> A campaign with a great rate and $200 left is a campaign that will run dry before your clips accrue. Budget-left is as important as rate.',
+          '<b>Check the country rules.</b> Find out whether your own audience counts. If Nigeria is not excluded, your views pay. If a campaign is US-only, no amount of editing changes your audience.',
+          '<b>Write the five facts into the console before you post.</b> Then re-read the brief after editing and before submitting — the second read is where people catch the tag they forgot.'
+        ],
+        drill: 'Take the MW4 campaign brief and write its five facts on paper: rate per platform, cap, minimum, platforms, required tags. Tape it where you edit.',
+        warn: '"Most people do not fail because they cannot edit. They fail because they did not read." That line from the Primal thread is the most useful sentence in everything you saved.',
+        source: 'Primal (step 4: read the requirements, twice); Maran (read the brief or be disqualified; check budget left).'
+      },
+      {
+        id: 'l10',
+        title: 'Payout traps',
+        goal: 'Recognise the four structures that turn views into nothing.',
+        steps: [
+          '<b>The high threshold.</b> Some campaigns only pay above 100,000 views per clip. Your 40k-view clip earns zero, not partial. Never join a threshold campaign as your first.',
+          '<b>The unverified view.</b> Views get filtered for bots, repeats, and missing country data. A post showing 80,000 views can settle at 55,000 verified. Plan on a haircut, not the raw number.',
+          '<b>The cap.</b> Per-clip and per-account caps mean a viral hit stops earning at the ceiling. Multiple distinct clips beat one enormous one.',
+          '<b>The disappearing budget.</b> Campaigns close when the budget is spent. Submit early in the campaign, not in week four.',
+          '<b>The unpaid labour.</b> If a campaign asks you to pay to join, buy a "starter pack", or recruit others to unlock payment, it is not a campaign. It is a scheme.'
+        ],
+        drill: 'For your current campaign, write the settlement maths: views × rate ÷ 1000, minus the assumed 30% verification haircut. Compare that with the cap. That is your realistic per-clip ceiling.',
+        warn: 'Treat every payout as zero until the money is in your account. Log the views, but do not spend the naira.',
+        source: 'Maran ("every one of these verifies before paying"); campaign terms on caps and country data.'
+      },
+      {
+        id: 'l11',
+        title: 'Choosing two, not ten',
+        goal: 'Commit to a portfolio you can actually service daily.',
+        steps: [
+          '<b>Two campaigns maximum for the first 30 days.</b> One where you already have footage and rights, one spare with a similar audience so you can cross-post the same edits.',
+          '<b>Prefer campaigns with a low minimum and no cap</b> while you are learning. You want volume feedback, not a lottery ticket.',
+          '<b>Check that the same clip can serve both</b> — if two campaigns want the same niche, the same footage, and different tags, you are doubling output per edit.',
+          '<b>Leave the rest bookmarked.</b> Write them down with their rates so you can rotate when one budget runs dry. There is no penalty for joining late; there is a penalty for joining ten and servicing none.'
+        ],
+        drill: 'Write your two campaigns on one line each, with rate, cap, minimum and tags. Add them to the console notes. Delete every other tab.',
+        warn: 'Multi-campaign spreading is how people post 60 mediocre clips and blame the algorithm. Fewer campaigns, more repetitions per format.',
+        source: 'Maran ("do not join 10 at once, pick 2 in one niche and post daily").'
+      }
+    ]
+  },
+  {
+    title: 'Module 4 · Cutting a clip that survives a phone screen',
+    lessons: [
+      {
+        id: 'l12',
+        title: 'The vertical crop',
+        goal: 'Get from a 16:9 source to a 1080×1920 clip without killing the composition.',
+        steps: [
+          '<b>Centre-crop is the default.</b> Taking the middle 9:16 slice of the frame works when the subject is centred. Most campaign footage is composed centre-heavy for exactly this reason.',
+          '<pre>ffmpeg -y -ss 00:00:33 -to 00:00:45 -i "source.mp4" -vf "crop=ih*9/16:ih,scale=1080:1920,setsar=1" -c:v libx264 -preset medium -crf 20 -r 30 -c:a aac -b:a 192k clip3.mp4</pre>',
+          '<b>Shift the crop when the subject is off-centre.</b> <span class="mono">crop=ih*9/16:ih:x:0</span> — raise <span class="mono">x</span> to push the window right. Test one frame before encoding the whole clip.',
+          '<b>Blurred pad when the frame cannot be cropped</b> — wide shots, text, logos, end cards: scale the image to fit the width, blur a filled background behind it. Nothing gets cut off.',
+          '<b>Check a still frame from every clip</b> before you post. Crops that look fine in a scrubbing timeline look broken at phone size in the dark.'
+        ],
+        drill: 'Export four clips from one source: two centre-crop, one shifted crop, one blurred pad. Look at all four on your actual phone, not the laptop. Keep the two that read best.',
+        warn: 'Dark or silhouette-heavy footage usually fails a vertical crop — the subject ends up as a black smear. Change the segment rather than fighting the crop.',
+        source: 'Working method from this project; validated against the MW4 briefing export.'
+      },
+      {
+        id: 'l13',
+        title: 'On-screen text and the hook',
+        goal: 'Make the first frame stop a scroll.',
+        steps: [
+          '<b>Three to six words maximum.</b> "NEW DMZ MAP" works. "Check out this incredible new map that just dropped" does not — nobody reads that at speed.',
+          '<b>Top third of the frame,</b> bold, white on a dark bar. The bottom 15% is covered by the app\u2019s interface and the caption overlay.',
+          '<b>Assume no audio.</b> A large share of viewers watch muted. If the clip only makes sense with sound, it does not work.',
+          '<b>Burn the text in before uploading.</b> Adding it inside the app is faster but you will redo it per platform and the two versions will drift. One export, two uploads.',
+          '<b>Text overlay is not the caption.</b> Overlay is for the eye, the caption field is for the tag and the disclosure, and the campaign checks the caption.'
+        ],
+        drill: 'Take your best clip. Make three versions with three different hooks: a claim, a question, a number. Post them a day apart on the same account and note which retained attention.',
+        warn: 'Do not put the hook over the most important visual moment. The text should frame the shot, not cover it.',
+        source: 'Primal and Luka (the hook is the visual plus the text plus the first second, treated as one unit).'
+      },
+      {
+        id: 'l14',
+        title: 'Captions, audio and disclosure',
+        goal: 'Meet the campaign\u2019s requirements without making the post look like an ad break.',
+        steps: [
+          '<b>Caption is original and specific.</b> Write what is actually in the clip. "The lighting in new DMZ is unreal" beats "🔥🔥🔥" and beats any generic line a reviewer has seen on 40 other submissions.',
+          '<b>Disclosure goes in the caption, visibly.</b> For these campaigns that means <span class="mono">#Ad</span>. It is a legal requirement in most markets and a campaign requirement in all of them.',
+          '<b>Tag the account the campaign names,</b> spelled exactly, on every platform. Check after posting that it rendered as a real mention — on some web uploaders it does not autocomplete and stays as plain text.',
+          '<b>Keep the original audio.</b> Replace it only when the campaign allows it. Original audio usually carries the game or the voice that makes the clip worth watching.',
+          '<b>Subtitles help retention</b> when there is speech. Word-by-word animated captions are optional; a clean static subtitle line is often better for gaming footage.'
+        ],
+        drill: 'Write three captions for one clip, each naming something specific you can see. Pick the one that would still make sense to someone who has never played the game.',
+        warn: 'A caption that promises something the footage does not show gets the clip rejected and can get your account flagged for misleading content.',
+        source: 'Campaign terms (tag plus #Ad plus original caption); Primal (short-form formatting).'
+      },
+      {
+        id: 'l15',
+        title: 'The quality-control pass',
+        goal: 'Catch the four failures that get clips rejected or ignored.',
+        steps: [
+          '<b>Watch it muted.</b> Are the captions readable and inside the safe area? Does the visual tell the story without audio?',
+          '<b>Listen without looking.</b> Is the audio clear, balanced, and free of awkward cuts or silence at the start?',
+          '<b>Watch normally.</b> Does it flow from first frame to last, or does it feel like three shots stapled together?',
+          '<b>Check the ending.</b> Does it stop at the right moment, or does it clip off a word, a fade, or the payoff? The last second is where most clips die.',
+          '<b>Then check the boring things:</b> 1080×1920, audio present, no watermark, correct tag, correct disclosure, correct file.'
+        ],
+        drill: 'Run all four passes on your next clip and write down what each one caught. Keep the list — it becomes your pre-submit checklist.',
+        warn: '"I will fix it after posting" does not exist. A clip posted with a broken ending cannot be re-uploaded without losing its view history.',
+        source: 'Oluwafemi thread — the mute pass, blind pass, normal pass, ending check. Short and genuinely useful.'
+      },
+      {
+        id: 'l16',
+        title: 'Batch, do not dribble',
+        goal: 'Produce a week of clips in one sitting so daily posting survives a bad day.',
+        steps: [
+          '<b>Source once, cut many.</b> One 60-second briefing can yield four to six distinct clips if the segments differ visually. Doing them in one session is roughly three times faster than doing them one at a time.',
+          '<b>Batch in this order:</b> pick segments, export all, then add text, then write all captions, then schedule or post.',
+          '<b>Keep a naming convention</b> — <span class="mono">clip3.mp4</span>, and a matching caption in a text file. You will forget which hook belonged to which file by Thursday.',
+          '<b>Leave one slot empty each day</b> for reactive content. If something in the game news breaks, an empty slot is worth more than a scheduled clip.'
+        ],
+        drill: 'Cut four clips in one sitting from a single source video. Write all four captions in one file. Post one per day for four days.',
+        warn: 'Batching tempts you into posting identical-looking clips back to back. Rotate the visual style between consecutive posts.',
+        source: 'Practical method from this project\u2019s MW4 export; consistent with the "3 quality clips daily" advice in the UgochiSusan thread.'
+      }
+    ]
+  },
+  {
+    title: 'Module 5 · Testing instead of hoping',
+    lessons: [
+      {
+        id: 'l17',
+        title: 'The two-second rule',
+        goal: 'Understand what the platform is actually measuring.',
+        steps: [
+          '<b>Retention in the first two seconds decides distribution.</b> If viewers swipe away immediately, the platform stops showing the clip. Nothing downstream matters.',
+          '<b>Motion beats stillness, faces beat scenery, and text beats both</b> — but only text that can be read in under a second.',
+          '<b>Start mid-action.</b> Do not open on a title card, a fade, or a logo. Cut into the most kinetic frame you have, then explain.',
+          '<b>Never open on black.</b> Half of the campaign footage you will be given starts on a fade. Trim it.',
+          '<b>One idea per clip.</b> A clip that tries to show the map, the guns and the date shows none of them.'
+        ],
+        drill: 'Take your worst-performing clip and identify the exact second it lost you. Re-cut the same footage starting two seconds later. Post it and compare.',
+        warn: 'If your clips consistently cap around 200–500 views, suspect the account and the hook before you suspect the footage.',
+        source: 'Luka (the "500-view jail" framing); general short-form practice.'
+      },
+      {
+        id: 'l18',
+        title: 'Three styles, then hunt the outlier',
+        goal: 'Stop guessing which format works and let the data pick.',
+        steps: [
+          '<b>Find three styles already working in your niche.</b> A "style" is the whole package: visual hook, text hook, caption voice, music, colour treatment.',
+          '<b>Run all three, roughly equally.</b> Do not post one style ten times and call it a test.',
+          '<b>Watch for the outlier.</b> If most clips do 500 views and one does 10,000, that one beat the others for a reason. Your job is to name the reason, not to celebrate the number.',
+          '<b>Write the reason down.</b> "It opened on the laser corridor with the text over the dark side" is a hypothesis. "It was better" is not.'
+        ],
+        drill: 'Define your three styles in writing, one sentence each. Post six clips, two per style. Identify the outlier and write the hypothesis for why it won.',
+        warn: 'Do not change three things at once. If you change the hook, the text and the music together, you learn nothing about which one mattered.',
+        source: 'Luka (three styles, one outlier).'
+      },
+      {
+        id: 'l19',
+        title: 'Split testing, round by round',
+        goal: 'Turn one lucky clip into a repeatable format.',
+        steps: [
+          '<b>Round 1 — five clips, one variable each.</b> Keep one element from the outlier and change everything else: clip 1 same visual hook, clip 2 same text hook, clip 3 same caption style, clip 4 same sound, clip 5 same colour treatment.',
+          '<b>Whichever wins tells you which element is doing the work.</b>',
+          '<b>Round 2 — lock the winner, add one more element</b> from the outlier, change the rest.',
+          '<b>Repeat until only one thing changes per clip.</b> At that point you have a format, and a format is what turns a page into an income stream.',
+          '<b>Keep everything else constant while you test</b> — same posting times, same account, same length. Otherwise you are measuring noise.'
+        ],
+        drill: 'Run one round of five this week. Log every clip and its 24-hour view count in the console so the comparison is on paper, not in your memory.',
+        warn: 'Testing at three clips a week gives you no signal. Split testing needs volume — which is why batching (lesson 16) comes first.',
+        source: 'Luka (split-test structure, rounds 1 and 2).'
+      },
+      {
+        id: 'l20',
+        title: 'Kill rules',
+        goal: 'Know when to abandon an account instead of pouring more clips into it.',
+        steps: [
+          '<b>30 to 60 clips with nothing past 10,000 views</b> means the account is not being distributed. Stop. It is an account, not a child.',
+          '<b>Start a fresh account with the same niche and the lessons you just learned.</b> The edits are reusable; the account is disposable.',
+          '<b>Track the baseline, not the best.</b> Your median view count is the health of the page. One viral clip on a dead account is an accident.',
+          '<b>Apply the same rule to a campaign.</b> If a campaign has 12 other clippers posting the same footage and nobody is clearing the threshold, the campaign is the problem.'
+        ],
+        drill: 'Write your kill thresholds down before you start: number of clips, view floor, and the date you will review. Deciding in advance stops you defending a bad account.',
+        warn: 'Restarting an account is free. Restarting a client relationship is not — do not apply kill logic to people.',
+        source: 'Luka ("kill the account, 30 to 60 clips and nothing past 10K").'
+      }
+    ]
+  },
+  {
+    title: 'Module 6 · Distribution without getting nuked',
+    lessons: [
+      {
+        id: 'l21',
+        title: 'Cadence and timing',
+        goal: 'Post consistently enough for the algorithm to learn you, at hours your audience is awake.',
+        steps: [
+          '<b>One to three posts a day, every day.</b> Consistency matters more than volume, and volume matters more than perfection.',
+          '<b>Post before your audience\u2019s evening, not during it.</b> The distribution window matters more than the exact minute.',
+          '<b>From Lagos targeting a US audience,</b> the high-traffic windows land in your early morning. Schedule rather than wake up.',
+          '<b>Space posts by at least an hour</b> so they do not compete with each other for the same test audience.',
+          '<b>Do not delete underperformers as a reflex.</b> Old clips get picked up by search weeks later, and deleting throws away the view history that would have counted. Remove a clip only if it breaks a campaign rule.'
+        ],
+        drill: 'Pick three posting slots for the week and put them in your phone calendar with the clip name attached. Post for seven days straight and check whether your median improves.',
+        warn: 'Posting 15 clips in one day then nothing for a week is the most common way to waste good edits. The platform rewards regularity.',
+        source: 'UgochiSusan (3 quality clips daily); general practice on posting windows.'
+      },
+      {
+        id: 'l22',
+        title: 'Cross-posting correctly',
+        goal: 'Get four platforms of distribution out of one edit.',
+        steps: [
+          '<b>Export once, at 1080×1920, no watermark.</b> Upload that same file everywhere.',
+          '<b>Write a different caption per platform</b> where the campaign requires different tags, and check each platform\u2019s tag renders as a real mention.',
+          '<b>On Instagram, share the Reel to your feed</b> rather than Stories only — Stories do not accumulate the same view count.',
+          '<b>On X, use the native clip feature</b> when the campaign is X-based; it credits the original creator automatically.',
+          '<b>Submit each platform separately.</b> TikTok views and Instagram views are counted by the campaign as separate submissions, and only the submitted ones pay.'
+        ],
+        drill: 'Take one finished clip to TikTok, Instagram and — if allowed — Shorts. Submit each one separately and note the view counts at 24 hours to see which platform your footage suits.',
+        warn: 'A clip that is live but not submitted earns nothing. Submission is a separate step from posting, and it is the step people forget.',
+        source: 'Maran (native X clips credit the creator); campaign terms (separate submissions per platform).'
+      },
+      {
+        id: 'l23',
+        title: 'What gets clips removed or unmonetised',
+        goal: 'Avoid the four failure modes that cost you a payout after you have already done the work.',
+        steps: [
+          '<b>Watermarks and visible repost artefacts</b> — downscale, remove bars, re-encode cleanly.',
+          '<b>Footage outside the permitted source</b> — if the brief says official folder only, anything else is a rejection even if it looks better.',
+          '<b>Missing or wrong disclosure</b> — #Ad absent, or buried under a wall of hashtags.',
+          '<b>Misleading captions</b> — claiming features, dates or numbers the footage does not show.',
+          '<b>Bought engagement</b> — instantly fatal to verification and often to the account.'
+        ],
+        drill: 'Run your last three posts through this list. Fix anything you find before submitting the next batch.',
+        warn: 'A rejection is not appealable into a payout. The review happens once.',
+        source: 'Campaign terms; Maran (verification kills bought views).'
+      }
+    ]
+  },
+  {
+    title: 'Module 7 · Getting the money',
+    lessons: [
+      {
+        id: 'l24',
+        title: 'Submit, verify, get approved',
+        goal: 'Turn a live post into a tracked, payable submission.',
+        steps: [
+          '<b>Submit immediately after posting.</b> Budgets run out and approval queues grow.',
+          '<b>Paste the post URL, not your profile URL,</b> and make sure the post is public. Private or friends-only posts cannot be verified.',
+          '<b>Expect a review window.</b> Approval can take days. Views keep accruing in the meantime and are usually counted at settlement.',
+          '<b>Keep a screenshot of each submission</b> — the URL, the date, and the view count at submission. If a payout is short, that screenshot is your entire case.'
+        ],
+        drill: 'Create a folder on your phone called "clip-receipts". Screenshot every submission screen from now on.',
+        warn: 'Posting is not earning. Until a submission is approved, the payout is zero.',
+        source: 'Primal (submission flow); campaign terms.'
+      },
+      {
+        id: 'l25',
+        title: 'Payouts from Nigeria',
+        goal: 'Know the route from campaign balance to your bank account.',
+        steps: [
+          '<b>Whop is the rail for most of these campaigns,</b> and it pays out to Nigerian bank accounts. Set up the payout method before you earn, not after.',
+          '<b>Confirm the currency conversion and fees</b> before your first withdrawal. A $50 payout does not arrive as $50.',
+          '<b>Check the minimum withdrawal per campaign.</b> $10 on Vyro, $1 on Content Rewards, $10 USDT on Darebay — small enough that you can test the route early.',
+          '<b>Do a test withdrawal at the smallest possible amount</b> as soon as you have anything. Learning the payout route is worth more than the $8.',
+          '<b>Keep the transaction record.</b> You will need it for lesson 27.'
+        ],
+        drill: 'Set up the payout method on every platform you joined, then withdraw the smallest allowed amount once to prove the route works.',
+        warn: 'Do not let a balance sit for months. Platforms close, campaigns end, and accounts get flagged. Monthly withdrawal is the habit.',
+        source: 'Primal (Whop pays to Nigerian banks); Maran (per-platform minimums).'
+      },
+      {
+        id: 'l26',
+        title: 'Track the numbers that matter',
+        goal: 'Replace feelings with a table.',
+        steps: [
+          '<b>Log per post:</b> date, platform, campaign, views at 24h, views at 72h, whether it was approved.',
+          '<b>Log per day:</b> clips produced, total views. The console Clips tab does this.',
+          '<b>Watch median views per clip,</b> not the total. Totals hide a dying page behind one lucky post.',
+          '<b>Watch approval rate.</b> If submissions are being rejected, the problem is in your checklist, not your editing.',
+          '<b>Review weekly.</b> Pick the single best and single worst clip and ask what differed.'
+        ],
+        drill: 'Fill the console for seven days without missing a day. Then look at the median, not the sum.',
+        warn: 'Screenshot view counts the day you post. Platforms revise counts downward, and you will not remember what it said.',
+        source: 'Practical method; console built for this.'
+      },
+      {
+        id: 'l27',
+        title: 'Records and tax, briefly',
+        goal: 'Keep yourself clean while the amounts are still small.',
+        steps: [
+          '<b>Keep one folder with every payout record</b> — date, platform, gross, fee, net, naira value received.',
+          '<b>Note the exchange rate on the day of each payout.</b> It is the only defensible way to report foreign income.',
+          '<b>In Nigeria, freelance and digital income is taxable.</b> At small amounts nobody will chase you, but the records cost you nothing and the alternative is reconstructing a year from memory.',
+          '<b>Separate the money.</b> One account for earnings, one for spending. It makes the wedding budget honest.'
+        ],
+        drill: 'Create the folder and a one-line log for each payout. If you expect to exceed a few hundred thousand naira total, talk to an accountant once — it is cheaper than guessing.',
+        warn: 'This is record-keeping advice, not tax advice. Rules and thresholds change; confirm with a professional if the amounts get real.',
+        source: 'General practice.'
+      }
+    ]
+  },
+  {
+    title: 'Module 8 · From clipper to paid editor',
+    lessons: [
+      {
+        id: 'l28',
+        title: 'The client ladder',
+        goal: 'Add the income stream that does not depend on the algorithm.',
+        steps: [
+          '<b>Campaign income is speculative; client income is contractual.</b> A client pays for eight clips whether they get 200 views or 200,000.',
+          '<b>Your portfolio is your campaign clips.</b> You already have proof of work — use the best three as samples, not a showreel.',
+          '<b>Approach people who already post long-form and do not clip it:</b> podcasters, coaches, small businesses, churches, event promoters, streamers. Look for accounts posting 20-minute videos with no vertical cuts.',
+          '<b>Lead with a free sample, not a pitch.</b> Three clips from their last episode, sent unasked, converts far better than a price list.',
+          '<b>Ask for the retainer after the second delivery,</b> not the first. Two happy deliveries is proof; one is a favour.'
+        ],
+        drill: 'List 40 accounts that post long-form and no shorts. Make three clips for the top three names on the list and send them this week.',
+        warn: 'Never promise views. Quote for the work. Promising virality is how clippers end up refunding clients.',
+        source: 'UgochiSusan (monthly retainers as the second income mode); console Client Kit templates.'
+      },
+      {
+        id: 'l29',
+        title: 'Pricing and retainers',
+        goal: 'Charge enough that the work is worth doing.',
+        steps: [
+          '<b>Price per batch, not per hour.</b> "8 clips, 2 revisions, delivered in 5 days" is a product. Hours are a negotiation you will lose.',
+          '<b>Start where the console Client Kit starts:</b> ₦10,000 for 3 clips, ₦25,000 for 8 clips plus captions, ₦60,000 monthly for 20 clips.',
+          '<b>Raise the price after two satisfied clients.</b> Not after ten. Two is enough evidence.',
+          '<b>Take a deposit on anything above ₦20,000.</b> Half up front, half on delivery. This is standard and nobody respectable objects.',
+          '<b>Put the scope in writing</b> — number of clips, revisions included, delivery date, and who owns the files.'
+        ],
+        drill: 'Write your three packages as three sentences each, with the revision count and delivery window. Send them to one person today, even as a test.',
+        warn: 'Unlimited revisions is the fastest way to work for ₦2,000 an hour. Cap it at two per clip, in writing.',
+        source: 'Console Client Kit pricing; UgochiSusan (retainers).'
+      },
+      {
+        id: 'l30',
+        title: 'Do not sell a course yet',
+        goal: 'Understand the one thing every thread you saved has in common — and avoid becoming it.',
+        steps: [
+          '<b>Look at the pattern.</b> Every one of the nineteen threads you sent ends with a link: a Selar course, a Discord, an affiliate campaign board, a "DM me to learn". The advice is real, but the advice is not the product. The product is the course.',
+          '<b>A course built on other people\u2019s screenshots is worth nothing,</b> and it is the exact thing the comment sections mock. You cannot teach a payout you have not received.',
+          '<b>The honest sequence is: earn first, document as you go, sell later</b> — and only with your own numbers, your own screenshots, and your own losses in the material.',
+          '<b>What you can use right now is this playbook as an operating manual,</b> not as a product. Thirty lessons, one campaign, thirty days of logging.',
+          '<b>If you do sell later,</b> the sellable part is not the theory. It is the specific, reproducible thing you did that others cannot easily copy: your niche, your format, your approval rate, your median views.'
+        ],
+        drill: 'Write one sentence describing what you will have that nobody in those threads has: your own 30-day log. That log is the only asset worth building this month.',
+        warn: 'Selling a "make money clipping" course before you have been paid is how people in this space lose credibility permanently — and in some jurisdictions, how they get into consumer-protection trouble.',
+        source: 'All nineteen source threads; specifically Primal (selar.com course link), Netokrypto ("interested to buy my clipping course?"), DanXV ($15/1K + Discord link).'
+      }
+    ]
+  }
+];
+
+const EXTRAS = [
+  { id: 'cut', title: 'What I cut from those threads, and why', nav: 'Appendix · Cut list' },
+  { id: 'sources', title: 'Sources and what each one contributed', nav: 'Appendix · Sources' }
+];
+
+const CUT = `
+<div class="crumb">Appendix</div>
+<h2>What I cut from those threads, and why</h2>
+<div class="goal">Nineteen threads, roughly one-third of it usable. These are the parts I deliberately left out of the lessons.</div>
+
+<h3>1. Location spoofing</h3>
+<p>Two of your sources teach it. One walks you through ordering a foreign SIM, setting the phone\u2019s region and time zone, disabling location services, and running a paid VPN in the same city. Another explains free proxies and matching phone location to them.</p>
+<p><b>Why it is out:</b> it violates the terms of every platform involved, and it breaks the specific campaign rule you are working under. Campaign payouts are calculated on the <i>audience\u2019s</i> country data. Spoofed or unavailable location data resolves to "no country data", which pays nothing, or trips fraud screening, which gets the account and the payout closed. You would be risking a working account to chase a payment structure that already pays your real audience.</p>
+<div class="box badbox"><span class="lbl">Also self-contradictory</span>The same thread that opens with "the proxy myth — I have never used a proxy" then describes buying a VPN and faking a US location. That is a proxy with extra steps.</div>
+
+<h3>2. The earnings screenshots</h3>
+<p>$26,403 per month. $6K in 90 days. $1.6K in two months. $5K then $10K. First place out of 80,000 clippers.</p>
+<p><b>Why they are out of the lessons:</b> none of them are verifiable, all of them are self-reported, and every one appears in a thread with something to sell at the end. They also anchor badly — a beginner reading "$26,403/month" sets a target that guarantees they will feel like a failure at ₦80,000.</p>
+<p>What is retained instead: the arithmetic of what a view is worth, so you can price your own expectations.</p>
+
+<h3>3. The paywall teases</h3>
+<p>"That part you learn once you are inside." "Comment TEST and I will DM you the breakdown." "My DMs are open."</p>
+<p><b>Why:</b> a lesson that stops exactly where the useful part begins is marketing, not teaching. Anything genuinely actionable in those threads is in the modules above, in full.</p>
+
+<h3>4. Buying a course</h3>
+<p>At least three of the sources sell one. Everything they teach in the free thread is either already in this playbook or is specific to their own account portfolio, which would not transfer to you anyway.</p>
+
+<h3>5. Multi-account farms</h3>
+<p>Running ten accounts and posting a thousand videos a month is a real strategy, and it is also how people lose ten accounts. It requires a device, SIM and scheduling setup that costs money and violates platform terms. Not in your first 30 days. Revisit only if you have a working single account and money to lose.</p>
+
+<h3>6. Crypto/X clipping</h3>
+<p>$15 per 1K on a QRT campaign sounds like the best rate in the list. It also lives on X, pays in crypto, is dominated by referral chains, and has nothing to do with the gaming page you are building. Adding it now splits your attention for a payout structure you cannot verify.</p>
+
+<h3>What survived, and where it came from</h3>
+<table>
+<tr><th>Idea</th><th>Source</th><th>Verdict</th></tr>
+<tr><td>Read the brief twice; most rejections are reading failures</td><td>Primal</td><td>Best single insight in the set</td></tr>
+<tr><td>The four-pass QC routine (mute / blind / normal / ending)</td><td>Oluwafemi</td><td>Directly usable, no fluff</td></tr>
+<tr><td>Five-day warm-up before posting</td><td>Luka, Primal</td><td>Cheap insurance, folklore on the mechanism</td></tr>
+<tr><td>Three styles, hunt the outlier, split-test one variable</td><td>Luka</td><td>The most transferable method</td></tr>
+<tr><td>Kill the account at 30–60 clips with no 10K</td><td>Luka</td><td>Correct and rarely said out loud</td></tr>
+<tr><td>Check whether your campaign\u2019s creator is banned on the platform</td><td>Luka</td><td>Genuinely obscure, genuinely useful</td></tr>
+<tr><td>Rate ranges and minimum withdrawals per board</td><td>Maran</td><td>Useful, but verify live — rates move</td></tr>
+<tr><td>One niche, two platforms, do not join ten</td><td>Maran</td><td>Correct</td></tr>
+<tr><td>Page identity: name, clean pic, bio that states the niche</td><td>TPurity</td><td>Correct, basic</td></tr>
+<tr><td>Near-zero barrier: no face, no followers, no money</td><td>TPurity, Primal</td><td>True, and the reason this is worth trying</td></tr>
+<tr><td>Client retainers as the second income stream</td><td>UgochiSusan</td><td>The part that actually de-risks the month</td></tr>
+<tr><td>Never buy views; verification catches it</td><td>Maran</td><td>Correct</td></tr>
+</table>
+`;
+
+const SOURCES = `
+<div class="crumb">Appendix</div>
+<h2>Sources and what each one contributed</h2>
+<div class="goal">Every claim in this playbook traced back to the thread it came from — and marked for how much weight it deserves.</div>
+
+<table>
+<tr><th>Thread</th><th>What it contributed</th><th>Weight</th></tr>
+<tr><td>@35a — Primal, "From Zero to Paid"</td><td>Signup flow (Content Rewards, Whop), the seven-step structure, "most people fail because they did not read", withdrawal to Nigerian banks. Ends with a paid course link.</td><td>High on process, ignore the sales page</td></tr>
+<tr><td>@musamanzz — "$26,403 per month"</td><td>Nothing beyond a headline. The thread is the number.</td><td>None</td></tr>
+<tr><td>@51bodila — GTA VI + AI</td><td>Not clipping. AI prompt list with an affiliate page.</td><td>None — off topic</td></tr>
+<tr><td>@CryptooGG_ — "$2,000–$5,000/month"</td><td>Headline only.</td><td>None</td></tr>
+<tr><td>@CryptooGG_ — open-source clippers</td><td>SupoClip, OpenShorts, AutoClip, ViralCutter, Reelsaw — local AI clip detection, face-tracked 9:16, word captions. SupoClip verified to exist on GitHub. Useful later; not needed for a 60-second briefing.</td><td>Medium, for scale only</td></tr>
+<tr><td>@Auradesigner1 — free AI video editing</td><td>General tutorial. No clipping mechanics.</td><td>Low</td></tr>
+<tr><td>@DanielDProud — "6-figure income from Clipur"</td><td>Personal narrative, first month $570. Clipur is X-oriented. Demonstrates the realistic starting range rather than the headline.</td><td>Low-medium</td></tr>
+<tr><td>@lukasplinter — "500-view jail"</td><td>The richest thread: warm-up routine, three styles, outlier hunting, split-test rounds, kill rules, banned-creator check. Also the SIM/VPN location-spoofing section, which is excluded.</td><td>High on method, zero on spoofing</td></tr>
+<tr><td>@TPurity_Alphas — page setup</td><td>Name/handle/avatar/bio rules, page-as-storefront framing.</td><td>Medium</td></tr>
+<tr><td>@TPurity_Alphas — "what is clipping"</td><td>Definitional, accurate, no new method.</td><td>Low</td></tr>
+<tr><td>@Wealth_Tactics_ — free proxy setup</td><td>Excluded entirely. Teaches location spoofing.</td><td>Zero — actively harmful here</td></tr>
+<tr><td>@heisturnx — 20 platforms</td><td>Platform list. The rates live in images I cannot read, so nothing from it is quoted as a number.</td><td>Low, unverified</td></tr>
+<tr><td>@UgochiSusan — "clipping with $0"</td><td>Niche selection, finding creators, 3 clips daily, the two income modes (campaigns vs retainers), permission warning.</td><td>High</td></tr>
+<tr><td>@UgochiSusan — "clipping 102"</td><td>Image post, no extractable text.</td><td>None</td></tr>
+<tr><td>@FairyTale424 — campaign links</td><td>Three Content Rewards campaigns at $1.5–$2/1K. Specific and checkable.</td><td>Medium, freshness-dependent</td></tr>
+<tr><td>@FairyTale424 — QC routine</td><td>Mute pass, blind pass, normal pass, ending check.</td><td>High, per word of text</td></tr>
+<tr><td>@TheMaran — platform list</td><td>Rate ranges, minimum withdrawals, payout rails, "pick 2 in one niche", "never buy views".</td><td>High, verify live</td></tr>
+<tr><td>@skiisurgod</td><td>Could not be retrieved (server error). Not used.</td><td>Unknown</td></tr>
+<tr><td>@Netokrypto — $1.6K road</td><td>Self-reported earnings split across two accounts; sells a course. The two-accounts framing is the only transferable part.</td><td>Low</td></tr>
+<tr><td>@Netokrypto — guide post</td><td>Could not be retrieved (server error). Not used.</td><td>Unknown</td></tr>
+<tr><td>@TweetsbyXV — $15/1K valblox</td><td>Highest advertised rate in the set, on a QRT campaign with a Discord gate and $93K "unclaimed". Excluded: unverifiable, crypto-centric, referral-shaped.</td><td>Zero as a plan, noted as a warning</td></tr>
+</table>
+
+<div class="box warnbox"><span class="lbl">Read this before trusting any rate</span>
+Every number above came from a tweet written by someone with an incentive. Campaign rates change per campaign, budgets expire, and threshold structures differ. The only rate that means anything is the one in the live brief you are actually posting under.</div>
+
+<div class="box drill"><span class="lbl">How to use this page</span>
+Not as evidence that clipping works. As a reminder of how much of the information circulating about it is marketing. When you read the next thread, look for the link at the bottom first, then decide how much of the middle to believe.</div>
+`;
+
+let S = load();
+function load(){
+  try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; }
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(S)); }
+
+const ALL = [];
+MODULES.forEach((m,mi)=>m.lessons.forEach(l=>ALL.push({...l, mod:mi})));
+const TOTAL = ALL.length;
+
+function isDone(id){ return !!S[id]; }
+
+function renderNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  MODULES.forEach(m=>{
+    const h = document.createElement('div');
+    h.className = 'mod'; h.textContent = m.title;
+    nav.appendChild(h);
+    m.lessons.forEach(l=>{
+      const b = document.createElement('button');
+      b.className = 'navbtn' + (isDone(l.id)?' done':'');
+      b.textContent = l.title;
+      b.dataset.go = l.id;
+      nav.appendChild(b);
+    });
+  });
+  const h = document.createElement('div');
+  h.className = 'mod'; h.textContent = 'Appendices';
+  nav.appendChild(h);
+  EXTRAS.forEach(x=>{
+    const b = document.createElement('button');
+    b.className = 'navbtn';
+    b.textContent = x.nav;
+    b.dataset.go = x.id;
+    nav.appendChild(b);
+  });
+  nav.querySelectorAll('[data-go]').forEach(b=>{
+    b.addEventListener('click',()=>location.hash = b.dataset.go);
+  });
+  const done = ALL.filter(l=>isDone(l.id)).length;
+  document.getElementById('pbar').style.width = (done/TOTAL*100)+'%';
+  document.getElementById('ptxt').textContent = done + ' of ' + TOTAL + ' complete';
+}
+
+function renderLesson(l){
+  const m = MODULES[l.mod];
+  const main = document.getElementById('main');
+  const idx = ALL.findIndex(x=>x.id===l.id);
+  const prev = ALL[idx-1], next = ALL[idx+1];
+  main.innerHTML = `
+    <div class="crumb">${m.title.replace(/^Module \d+ · /,'')} · Lesson ${idx+1} of ${TOTAL}</div>
+    <h2>${l.title}</h2>
+    <div class="goal">${l.goal}</div>
+    <h3>What to actually do</h3>
+    <ol class="steps">${l.steps.map(s=>'<li>'+s+'</li>').join('')}</ol>
+    <div class="box drill"><span class="lbl">Drill</span>${l.drill}</div>
+    ${l.warn ? `<div class="box warnbox"><span class="lbl">Watch out</span>${l.warn}</div>` : ''}
+    <div class="src">Source: ${l.source}</div>
+    <div class="row">
+      <button class="btn ${isDone(l.id)?'done':''}" id="mark">${isDone(l.id)?'Completed ✓':'Mark complete'}</button>
+      ${prev?`<button class="ghost" id="prev">← ${prev.title}</button>`:''}
+      ${next?`<button class="ghost" id="next">${next.title} →</button>`:`<button class="ghost" id="next">Appendix →</button>`}
+    </div>`;
+  document.getElementById('mark').addEventListener('click',()=>{
+    S[l.id] = !S[l.id]; save(); renderNav(); renderLesson(l);
+  });
+  const p = document.getElementById('prev'), n = document.getElementById('next');
+  if(p) p.addEventListener('click',()=>location.hash = prev.id);
+  if(n) n.addEventListener('click',()=>location.hash = next ? next.id : 'cut');
+}
+
+function renderExtra(id){
+  const main = document.getElementById('main');
+  main.innerHTML = (id==='cut'?CUT:SOURCES) + `
+    <div class="row">
+      <button class="ghost" id="back">← Back to lesson 30</button>
+    </div>`;
+  document.getElementById('back').addEventListener('click',()=>location.hash = 'l30');
+}
+
+function route(){
+  const id = (location.hash||'').replace('#','') || 'l1';
+  document.querySelectorAll('.navbtn').forEach(b=>
+    b.classList.toggle('on', b.dataset.go===id));
+  if(id==='cut'||id==='sources'){ renderExtra(id); }
+  else {
+    const l = ALL.find(x=>x.id===id) || ALL[0];
+    renderLesson(l);
+    const active = document.querySelector('.navbtn.on');
+    if(active && window.innerWidth<=820) active.scrollIntoView({block:'nearest'});
+  }
+  window.scrollTo(0,0);
+}
+
+window.addEventListener('hashchange', route);
+renderNav();
+route();
+</script>
+</body>
+</html>
