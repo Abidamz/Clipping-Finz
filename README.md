@@ -87,3 +87,10 @@ the user collected, with the unverifiable parts stripped out.
   rating).
 - Every lesson ends with a drill and, where relevant, a "watch out" box.
 - No external dependencies; open the file directly in a browser.
+
+## Launch kit (Kenya → Nigeria)
+
+`course/launch-kit/` — a sellable 32-page workbook plus a 10-page internal launch plan,
+built as PDFs from Python source. See `course/launch-kit/README.md` for the build commands,
+the Systeme.io + Selar stack, and the finding that TikTok Ads cannot run on N40,000
+($50/day minimum vs ~$30 total).
