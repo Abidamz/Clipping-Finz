@@ -33,7 +33,7 @@ def f(p, s):
 # (start, end, kind, payload)
 SCENES = [
     (0.0,  4.0,  "hook",
-     ["You have never clipped", "anything.", "", "37 days left in the year.", "Here is the honest version."]),
+     ["You have never clipped", "anything.", "", "That is fine.", "Here is the honest version."]),
     (4.0,  9.0,  "needs",
      ["You do not need", "followers. Or a camera.", "Or permission."]),
     (9.0,  15.0, "steps",
@@ -41,9 +41,9 @@ SCENES = [
     (15.0, 20.0, "trap",
      ["The part nobody says:", "some platforms pay nothing", "under 100,000 views."]),
     (20.0, 25.0, "timeline",
-     ["December starts in 7 days.",
-      "37 days left in the year.",
-      "Enough to learn it.",
+     ["There is no perfect week.",
+      "Learning takes weeks, not talent.",
+      "Enough to start.",
       "Not enough to get rich."]),
     (25.0, 28.0, "cta",
      ["Clipping From Zero", "33-page workbook"]),
@@ -127,7 +127,7 @@ def render(t):
 
         elif kind == "timeline":
             y = 620
-            styles = [(f(FB, 62), WHITE), (f(FB, 62), TEAL),
+            styles = [(f(FB, 62), WHITE), (f(FB, 50), TEAL),
                       (f(FR, 56), ORANGE), (f(FR, 56), LIGHT)]
             for i, ln in enumerate(lines):
                 fo, col = styles[min(i, len(styles) - 1)]
