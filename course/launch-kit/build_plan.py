@@ -88,12 +88,11 @@ story.append(P("<b>Option C \u2014 save the \u20a640,000.</b> Launch entirely or
                "two weeks. If nothing sells at all, the ads were never the problem, and you "
                "still have the money."))
 story.append(Spacer(1, 2 * mm))
-story.append(warn("Recommended: B, then A", [
-    P("Run two weeks of organic and outreach first, at zero cost. Only release the "
-      "\u20a640,000 once you have (a) a checkout that a real Kenyan has completed, and (b) at "
-      "least one stranger who said yes without knowing you. Advertising amplifies demand; it "
-      "does not create it. Spending first is how the budget disappears with nothing learned.",
-      st_small)
+story.append(warn("Recommended for launch day: skip ads entirely", [
+    P("Do not spend anything on day one. Ship the PDF, test the checkout, post once, and send "
+      "ten DMs. That is the whole launch. Only release the \u20a640,000 once you have (a) a "
+      "checkout a real Kenyan has completed and (b) at least one stranger who said yes without "
+      "knowing you. Advertising amplifies demand; it does not create it.", st_small)
 ]))
 story.append(PageBreak())
 
@@ -149,8 +148,6 @@ story.append(data_table([
      "3 funnels, 15 steps total"],
     ["Email capture + delivery", "Systeme.io", "Unlimited sends on the free plan",
      "2,000 contacts, 1 email campaign, 1 automation rule"],
-    ["Course area (videos)", "Systeme.io", "Built-in course hosting",
-     "1 course"],
     ["Checkout (KES + M-Pesa)", "Selar", "A Kenyan buyer can actually complete it",
      "Commission only: 5% + KSh 20"],
     ["Payouts", "Selar \u2192 your bank", "NGN in 1 business day, KES in 4",
@@ -162,7 +159,7 @@ story += numbered([
     "<b>Systeme.io account</b> (free, no card). Create one funnel: opt-in page \u2192 thank-you page \u2192 course area.",
     "<b>The lead magnet</b>: a 6-page PDF that solves one small problem \u2014 \u201cThe 5 Checks Before You Submit a Clip\u201d. This is what the ads and DMs point at, not the paid product.",
     "<b>The sales page</b>: headline, what it is, who it is for, what is inside, price, three FAQs, buy button.",
-    "<b>Selar product</b>: upload the workbook + video access instructions, price at KSh 1,499, set the currency to KES.",
+    "<b>Selar product</b>: upload the workbook PDF, price at KSh 1,499, set the currency to KES.",
     "<b>Connect</b>: the Systeme.io buy button links to the Selar checkout; the Selar confirmation email sends access.",
     "<b>Test with a real Kenyan</b>: one friend or contact completes the purchase end to end with real money (refund them). Screenshot every step.",
 ])
@@ -173,7 +170,7 @@ story.append(data_table([
     ["Order", "Section", "Example line"],
     ["1", "Headline", "Learn video clipping from zero \u2014 and find real work in 30 days."],
     ["2", "Sub-line", "A practical workbook for beginners in Kenya and Nigeria. No editing experience needed."],
-    ["3", "What it is", "Six parts, 24 chapters, a 30-day log. Workbook + video walkthroughs."],
+    ["3", "What it is", "A 33-page workbook: six parts, 24 chapters, a 30-day log. PDF only."],
     ["4", "Who it is for", "Complete beginners, students, anyone who wants a digital skill that pays per clip."],
     ["5", "Proof of work", "Sample clips you cut. Your own page. Screenshots of the actual lessons."],
     ["6", "Price \u2014 and what it is not", "KSh 1,499, one payment. \u201cThis is not a get-rich scheme and I will not promise you an income.\u201d"],

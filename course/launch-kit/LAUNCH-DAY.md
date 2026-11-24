@@ -1,234 +1,127 @@
-# Launch day — Clipping From Zero
+# LAUNCH — do these five things
 
-Everything you paste is below. Work top to bottom. Total time: **about 4 hours**.
-
----
-
-## Before you start: one decision
-
-The workbook mentions video lessons in places. **If you do not have videos recorded, the sales page must not promise them.** The copy below sells the **PDF workbook only** — 33 pages, six parts, 24 chapters, 30-day log. That is a real product and it is finished.
-
-Adding "video lessons coming soon" costs you trust and buys nothing. Launch the PDF. Sell videos in version 2 when they exist.
+PDF only. No videos, no funnel, no ads. You can be live in 90 minutes.
 
 ---
 
-## Hour 1 — Selar (the checkout)
+## 1. Selar — 30 minutes
 
-1. Go to **selar.com**, sign up as a **creator**. Verify your bank details now — payouts cannot move without them.
+1. **selar.com** → sign up as creator → add your bank details.
 2. **Add product → Digital product.**
-3. Paste the fields below.
-
-**Product name**
+3. Name:
 ```
 Clipping From Zero — The Beginner's Workbook
 ```
-
-**Short description**
+4. Price: **KES 1,499**
+5. Upload `Clipping-From-Zero-Workbook.pdf`. Delivery: **instant download**.
+6. Description — paste exactly this:
 ```
-A 33-page workbook that teaches video clipping properly: the business, the real numbers, finding campaigns and clients, cutting for a phone screen, and getting paid. Written for beginners in Africa. No income is promised.
+A 33-page workbook that teaches video clipping properly: the business, the real numbers, finding campaigns and clients, cutting for a phone screen, and getting paid.
+
+Six parts. 24 chapters. A 30-day log. PDF only.
+
+Written for beginners in Africa, priced in naira and shillings. No income is promised — page one says so.
 ```
+7. Publish. **Copy the link.** That link is your business.
 
-**Price**
-```
-KES 1,499
-```
-
-**Category:** Education / Business
-
-**What the buyer receives:** upload `Clipping-From-Zero-Workbook.pdf`, and set the delivery to **instant download after payment**.
-
-4. **Set the currency to KES.** If Selar only offers NGN on your account, price in NGN at **₦15,500** and note it at checkout — do not set a KES price you cannot collect.
-5. Publish, then copy the product link. That link is your entire business today.
+> If Selar won't do KES on your account, price it **₦15,500** instead. Do not set a price you can't collect.
 
 ---
 
-## Hour 2 — the landing page (Systeme.io)
+## 2. Instagram + TikTok bio — 5 minutes
 
-Free account, no card. One funnel, three steps: **opt-in → thank you → sales page**. If you want to skip the opt-in entirely today, just build the **sales page** and point ads at it.
+Put the Selar link in both bios.
 
-Paste this, top to bottom. Do not add sections.
-
----
-
-### HEADLINE
-
+**Instagram bio:**
 ```
-Learn video clipping properly — in 30 days, on your phone.
+Clipping From Zero — 33-page workbook
+Learn video clipping properly.
+No income promises. Link ↓
 ```
 
-### SUB-HEADLINE
-
+**TikTok bio:**
 ```
-A 33-page workbook for beginners in Africa. The real numbers, the real traps, and a day-by-day log. No editing experience needed. No income promised.
-```
-
-### BUY BUTTON
-
-```
-Get the workbook — KSh 1,499
-```
-
-### SECTION: What this is
-
-```
-Clipping is the work of cutting long videos into short vertical clips and posting them for brands and creators who pay per thousand views.
-
-This workbook teaches that work in order: what the business actually is, how the money is calculated, how to find campaigns that pay, how to cut a clip that survives a phone screen, how to test instead of guessing, and how to get the money into a Nigerian or Kenyan bank account.
-
-It is 33 pages. Six parts. Twenty-four chapters. Plus a 30-day log you fill in.
-```
-
-### SECTION: Who it is for
-
-```
-- Complete beginners. You do not need editing experience.
-- Anyone with a phone and one to two hours a day.
-- People who want a skill that can be sold as work, not a lottery ticket.
-- Readers in Nigeria, Kenya and the rest of Africa — the figures are in naira and shillings, and the method works in any currency.
-```
-
-### SECTION: Who it is NOT for
-
-```
-- Anyone looking for guaranteed income. Nothing can guarantee views, and this workbook says so on page one.
-- Anyone who wants to buy views or fake a country with a VPN. Chapter 3.3 explains why that gets accounts closed.
-- Anyone who will not do the tasks. Every chapter ends with one.
-```
-
-### SECTION: What is inside
-
-```
-Part 1 — The business, honestly. What clipping pays for, how CPM, minimums, caps and verification actually work, and what a view is worth in naira and shillings.
-
-Part 2 — Finding real work. The platforms that pay, how to read a campaign brief so you stop failing review, seven traps that eat beginners, and how to get your first client without an audience.
-
-Part 3 — Cutting for a phone. The vertical crop, the first two seconds, captions and disclosure, and the four-pass quality check that stops rejections.
-
-Part 4 — Publishing and testing. Account setup that does not get throttled, posting cadence, and the split test that turns one lucky clip into a repeatable format.
-
-Part 5 — Getting the money. Submission and approval, payouts to Nigerian and Kenyan accounts, and what records to keep.
-
-Part 6 — The 30-day workbook. Daily log, weekly reviews, and a day-30 decision page.
-```
-
-### SECTION: What it costs
-
-```
-KSh 1,499. One payment. Instant download.
-```
-
-### SECTION: FAQ
-
-```
-Do I need a laptop?
-No. A phone is enough. A laptop makes batch editing faster, and the workbook says which parts benefit from one.
-
-Do I need followers already?
-No. Campaign payouts do not require an audience. Chapter 2.1 explains which platforms pay and what they require.
-
-How do I get paid?
-Through the campaign platform, or directly from a client. Chapter 5.2 covers both routes, including payout times for Nigerian and Kenyan accounts.
-
-I am a total beginner. Will I understand it?
-Yes. It starts with what clipping actually is and assumes you know nothing. It also assumes you will do the tasks.
-
-Will I make money?
-Some people do, and many people do not, especially in the first month. The workbook teaches the skill and shows you exactly what the work pays and what it costs you to earn it. It does not promise a result, and you should not buy anything that does.
-```
-
-### SECTION: Footer
-
-```
-Questions before you buy? WhatsApp: [your number]
-Refunds: email within 7 days if the workbook is not what is described. [your email]
+Clipping From Zero 📘 33-page workbook
+Link in bio
 ```
 
 ---
 
-## Hour 3 — the checkout test (do not skip this)
+## 3. One test purchase — 15 minutes
 
-Send this to **one Kenyan** you can reach — a contact, a friend of a friend, anyone.
+Send to one person you know can pay:
 
 ```
-Hey — I'm launching a workbook this week and I need one honest test before I tell anyone else about it.
+Hey — quick favour. I've just put my workbook up for sale and I need one honest test before I post it anywhere.
 
-Can you try buying it? It's KSh 1,499, I'll send it straight back to you. I just need to know: does the price show in shillings, does M-Pesa work, and do you get the download straight away.
+Can you try buying it? KSh 1,499, I'll send it straight back. I need to know three things: does the price show in shillings, does M-Pesa work, and does the PDF download immediately.
 
-Takes two minutes. Tell me straight if anything looks broken.
+Two minutes. Tell me straight if anything is broken.
 ```
 
-**All three must be true before you post anything public:**
-
-- [ ] Price displayed in KSh
-- [ ] M-Pesa or card completes
-- [ ] Download arrives automatically
-- [ ] You can withdraw the money
-- [ ] They understood what they bought from the page alone
-
-If any of these fail, fix it. Do not advertise around a broken checkout.
+If all three work — you're live. If not, fix it and don't post yet.
 
 ---
 
-## Hour 4 — the launch itself
+## 4. Post this — once, everywhere
 
-### Post this to WhatsApp status, X, Instagram and LinkedIn
+WhatsApp status, X, Instagram, LinkedIn, TikTok caption:
 
 ```
 I built something.
 
-It's a 33-page workbook on video clipping — the work people do cutting long videos into shorts for brands that pay per thousand views.
+A 33-page workbook on video clipping — the work people do cutting long videos into shorts for brands that pay per thousand views.
 
-I wrote it because everything I found on the subject was either a thread selling a course, or an earnings screenshot nobody could verify. This is the version I wanted: what the work pays, what it costs you, how to find campaigns that actually pay out, and the seven traps that make beginners earn nothing.
+I wrote it because everything I found on the subject was either a thread selling a course or an earnings screenshot nobody could verify. This is the version I wanted: what the work actually pays, what it costs you, how to find campaigns that pay out, and the seven traps that make beginners earn nothing.
 
-33 pages. 24 chapters. A 30-day log. KSh 1,499 (about ₦15,500).
+33 pages. 24 chapters. A 30-day log.
 
-No income promises. If you want to learn the skill, it's here: [LINK]
-```
-
-### Then send this to 10 people directly
-
-Not a broadcast. One at a time, to people who might actually want it.
-
-```
-[Name] — I've just put together a workbook on video clipping, the short-form editing work. Thought of you because you [post long videos / want a side skill / asked me about freelancing].
-
-Happy to send you the first two parts free if you want to see whether it's any good before paying. No pressure either way.
-```
-
-Two silences and one reply is a normal ratio. The reply is the business.
-
-### Then post this organically, once a day for the next week
-
-```
-Day 1: "Most beginners earn nothing in their first month of clipping. Here's the arithmetic nobody shows you: 100,000 views at $2 per thousand is $200. Here's what that actually means for your month." [workbook page screenshot]
-```
-
-```
-Day 2: "Three things that get a clip rejected before anyone looks at the editing: a watermark, a copied caption, a missing disclosure. All three are on page 20 of the workbook."
-```
-
-```
-Day 3: "I'm not going to tell you clipping makes you a million naira. Here's the honest range for a first month, and here's what changes it."
+KSh 1,499 — link in bio.
 ```
 
 ---
 
-## What happens after today
+## 5. Send ten DMs — 20 minutes
 
-| When | What you do |
+One at a time. Not a broadcast.
+
+```
+[Name] — I've just put together a 33-page workbook on video clipping, the short-form editing work. Thought of you because [you post long videos / you asked me about freelancing / you're always looking for a side skill].
+
+Happy to send you the first two parts free so you can judge it before paying. No pressure either way.
+```
+
+Expect two silences and one reply. The reply is the business.
+
+---
+
+## That's the launch
+
+Nothing else today. No funnel, no email sequence, no ads, no videos.
+
+**Tomorrow:** ask the test buyer for one sentence you can put on the page.
+
+**This week:** ten DMs a day, and one post a day using a screenshot from inside the workbook.
+
+**Day 7:** count page visits, checkout starts, sales. If 40+ messages produced zero sales, the price or the offer is wrong — not the traffic.
+
+---
+
+## Stop rules
+
+| If | Then |
 | --- | --- |
-| Day 2 | Ask the test buyer for one sentence about the workbook. Use it on the page. |
-| Day 3–7 | Ten DMs a day. No ads yet. |
-| Day 7 | Count: page views, checkout starts, sales. If zero sales from 40+ messages, the offer or price is wrong — not the traffic. |
-| Day 8–14 | Offer 30–40% affiliate commission to 5 Kenyan creators via Selar. |
-| Day 15 | Only now consider ads — KSh 500/day for 6 days, Kenya only, and only if the checkout test passed. |
+| 40 messages, no sale | Drop the price to KSh 999 and rewrite the headline |
+| Clicks but no checkout starts | The page is failing, not the price |
+| Two weeks, still nothing built | You are planning, not launching. Cut everything except the Selar link and ten DMs a day |
+| Anyone asks for a refund | Give it immediately. One angry buyer costs more than KSh 1,499 |
 
 ---
 
-## The honest expectation
+## What this is worth, honestly
 
-Ten sales in 30 days would be a **successful first launch** and worth roughly **₦155,000**. It is not ₦2 million.
+Ten sales in 30 days is a successful first launch — about **₦155,000**.
 
-The value of this month is the answer to one question: **will strangers pay for this?** You cannot learn that by reading, planning, or building another PDF. You learn it by publishing the link and watching what happens.
+Not ₦2 million. The month's real output is the answer to one question: **will strangers pay for this?**
 
-Publish the link today. Everything else can be fixed after.
+Publish the link today. Everything else can wait.

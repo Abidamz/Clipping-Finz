@@ -8,7 +8,7 @@ Two PDFs, built from source so they can be regenerated after any edit.
 | `Launch-Plan-Kenya-Nigeria-30-Days.pdf` | 11 pages. Budget reality, funnel, ad scripts, calendar, stop rules. | No — internal |
 | `cover-square-1080.png` | Product image for the Selar listing and social posts. | Use as artwork |
 | `cover-story-1080x1920.png` | Vertical promo image (story / Reel cover / status). | Use as artwork |
-| `LAUNCH-DAY.md` | Paste-ready launch copy: Selar fields, sales page, checkout test, launch posts. | Follow it |
+| `LAUNCH-DAY.md` | **Start here.** Five steps, 90 minutes, PDF-only launch. | Follow it |
 
 ## The headline finding
 
