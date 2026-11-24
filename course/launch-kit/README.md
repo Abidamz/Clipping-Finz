@@ -9,6 +9,7 @@ Two PDFs, built from source so they can be regenerated after any edit.
 | `cover-square-1080.png` | Product image for the Selar listing and social posts. | Use as artwork |
 | `cover-story-1080x1920.png` | Vertical promo image (story / Reel cover / status). | Use as artwork |
 | `LAUNCH-DAY.md` | **Start here.** Five steps, 90 minutes, PDF-only launch. | Follow it |
+| `TIKTOK-TEST.md` | The honest TikTok ads setup: ₦40,000 = $29 = one test day. Includes the 3 pre-checks and what to do instead. | Read before spending |
 
 ## The headline finding
 
