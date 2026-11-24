@@ -157,7 +157,7 @@ class FullCover(Flowable):
 
         c.setFillColor(HexColor("#c8d0de"))
         c.setFont("DJB", 9)
-        c.drawString(L, 96, "For readers in Nigeria and Kenya")
+        c.drawString(L, 96, "Built for the African creator market")
         c.setFillColor(DIM)
         c.setFont("DJ", 9)
         c.drawRightString(R, 96, "October 2026")

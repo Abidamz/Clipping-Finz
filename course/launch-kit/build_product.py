@@ -40,7 +40,7 @@ story.append(P("Read this page before you buy, or before you start",
 story.append(Spacer(1, 3 * mm))
 story.append(data_table([
     ["What this is", "A structured course in clipping: the business, the work, the money, the traps."],
-    ["Who it is for", "Complete beginners in Nigeria and Kenya, 18+. Phone-only is fine."],
+    ["Who it is for", "Complete beginners, 18+. Phone-only is fine. Priced in naira and shillings."],
     ["Time to read", "About 3 hours."],
     ["Time to work through", "30 days, 1\u20132 hours a day."],
     ["What it costs to start", "Nothing but data and time."],
@@ -71,7 +71,7 @@ toc = [
     ("1", "Understand the business before you spend a single hour", pg("c1.1")),
     ("", "1.1  What clipping actually is", ""),
     ("", "1.2  How the money works: views, rates, caps, verification", ""),
-    ("", "1.3  The honest numbers for Kenya and Nigeria", ""),
+    ("", "1.3  What a view is worth \u2014 in naira and shillings", ""),
     ("", "1.4  Four ways people earn from clipping", ""),
     ("", "1.5  What you need before day one", ""),
     ("2", "Find real work, not schemes", pg("c2.1")),

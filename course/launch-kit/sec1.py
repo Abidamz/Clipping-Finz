@@ -122,9 +122,12 @@ def build(story, doc):
 
     # ------------------------------------------------ 1.3
     story.append(Mark(doc, "c1.3"))
-    story += h1("Chapter 1.3", "The honest numbers for Kenya and Nigeria")
+    story += h1("Chapter 1.3", "What a view is worth \u2014 in naira and shillings")
     story.append(P("Convert everything into the money you spend, then decide whether the "
                    "target you have in your head is a plan or a wish."))
+    story.append(P("The arithmetic is the same everywhere. The figures below are in naira and "
+                   "Kenyan shillings because those are the two markets this edition prices for "
+                   "\u2014 substitute your own currency and the method still holds.", st_small))
     story.append(Spacer(1, 1 * mm))
     story.append(P("Rates used throughout: \u20a61,340 = $1 and KSh1 = \u20a610.35, October "
                    "2026 mid-market. Check the live rate before you price anything.", st_small))
