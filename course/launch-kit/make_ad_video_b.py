@@ -33,7 +33,7 @@ def f(p, s):
 # (start, end, kind, payload)
 SCENES = [
     (0.0,  4.0,  "hook",
-     ["You have never clipped", "anything.", "", "Here is the honest", "version."]),
+     ["You have never clipped", "anything.", "", "37 days left in the year.", "Here is the honest version."]),
     (4.0,  9.0,  "needs",
      ["You do not need", "followers. Or a camera.", "Or permission."]),
     (9.0,  15.0, "steps",
@@ -41,7 +41,10 @@ SCENES = [
     (15.0, 20.0, "trap",
      ["The part nobody says:", "some platforms pay nothing", "under 100,000 views."]),
     (20.0, 25.0, "timeline",
-     ["December is 9 weeks away.", "Enough to learn it.", "Not enough to get rich."]),
+     ["December starts in 7 days.",
+      "37 days left in the year.",
+      "Enough to learn it.",
+      "Not enough to get rich."]),
     (25.0, 28.0, "cta",
      ["Clipping From Zero", "33-page workbook"]),
 ]
@@ -123,13 +126,15 @@ def render(t):
             ld.rectangle([W / 2 - pw / 2, y - 6, W / 2 + pw / 2, y + 2], fill=ORANGE)
 
         elif kind == "timeline":
-            y = 680
+            y = 620
+            styles = [(f(FB, 62), WHITE), (f(FB, 62), TEAL),
+                      (f(FR, 56), ORANGE), (f(FR, 56), LIGHT)]
             for i, ln in enumerate(lines):
-                fo = f(FB, 60) if i == 0 else f(FR, 54)
-                col = WHITE if i == 0 else (TEAL if i == 1 else ORANGE)
+                fo, col = styles[min(i, len(styles) - 1)]
                 w = ld.textlength(ln, font=fo)
                 ld.text(((W - w) / 2, y), ln, font=fo, fill=col + (255,))
-                y += 104
+                y += 104 if i < 1 else 96
+            ld.rectangle([W / 2 - 130, y + 4, W / 2 + 130, y + 12], fill=ORANGE)
 
         elif kind == "cta":
             y = 700
