@@ -10,7 +10,7 @@ Two PDFs, built from source so they can be regenerated after any edit.
 | `cover-story-1080x1920.png` | Vertical promo image (story / Reel cover / status). | Use as artwork |
 | `LAUNCH-DAY.md` | **Start here.** Five steps, 90 minutes, PDF-only launch. | Follow it |
 | `TIKTOK-TEST.md` | The honest TikTok ads setup: budget reality, the 3 pre-checks, ad scripts. | Read before spending |
-| `make_ad_video.py` + `ENCODE-AD-VIDEO.ps1` | Generates a 24s 1080x1920 silent ad video from generated frames. Run the script on a PC with ffmpeg. | Run once |
+| `make_ad_video*.py` + `ENCODE-AD-VIDEO*.ps1` | Four ad creatives as frame sequences: A "the arithmetic" (24s), B "the beginner" (28s), C "December urgency" (30s), D "direct response" (22s). Encode on a PC with ffmpeg. | Pick one, encode |
 
 ## The headline finding
 
