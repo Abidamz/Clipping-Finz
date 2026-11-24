@@ -19,8 +19,8 @@ ffmpeg -y -framerate 30 -i ".\ad-frames\f%05d.png" `
 
 if (Test-Path "ad-creative-a.mp4") {
     $mb = (Get-Item "ad-creative-a.mp4").Length / 1MB
-    Write-Host ("Done: ad-creative-a.mp4  {0:N1} MB  — 1080x1920, 24s, silent" -f $mb) -ForegroundColor Green
+    Write-Host ("Done: ad-creative-a.mp4  {0:N1} MB  - 1080x1920, 24s, silent" -f $mb) -ForegroundColor Green
     Write-Host "Upload this as the ad video in TikTok Ads Manager." -ForegroundColor Green
 } else {
-    Write-Host "Encoding failed — copy the ffmpeg output above and send it to me." -ForegroundColor Red
+    Write-Host "Encoding failed - copy the ffmpeg output above and send it to me." -ForegroundColor Red
 }
